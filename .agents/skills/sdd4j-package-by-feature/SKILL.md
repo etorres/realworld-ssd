@@ -1,0 +1,116 @@
+---
+name: sdd4j-package-by-feature
+description: SDD4J architecture adapter for Java projects organized by feature or capability package. Use with SDD4J and Java stack skills when each feature owns a package containing its spec, entrypoints, application code, domain/model code, and tests. Trigger on sdd4j-package-by-feature, package-by-feature, feature package, vertical slice package, capability package, or Java architecture mapping for co-located specs.
+metadata:
+  type: architecture-adapter
+---
+
+# Skill: Package By Feature
+
+## Objective
+
+Map a Java capability to one feature-owned package. This skill owns architecture layout only. Compose it with `sdd4j` for spec workflow and with a stack skill for framework idioms and verification.
+
+Use this adapter only when the project accepts strict feature-package ownership: one SDD4J capability maps to one feature package, and contract-relevant code for that capability stays in or below that package unless `AGENTS.md` declares a shared or cross-cutting exception.
+
+## Architecture Invariants
+
+- The project or module has `sdd4j-package-by-feature` as its primary SDD4J architecture adapter.
+- One SDD4J capability maps to one Java feature package.
+- The feature package is the capability identity and the default ownership boundary.
+- The capability spec lives in that package's `package-info.java`.
+- Contract-relevant entrypoints, application operations, domain/model/entity types, and capability tests belong in the feature package, its subpackages, or a declared mirrored test package.
+- Shared packages are exceptional. They must be declared in `AGENTS.md` or treated as cross-cutting implementation outside the capability contract.
+- Do not mix this adapter with layered or BCE mapping inside the same capability.
+
+## Default Layout
+
+Use this shape unless the project's `AGENTS.md` declares a different mapping:
+
+```text
+src/main/java/<base>/<capability>/
+  package-info.java
+  <Capability>Controller.java       # optional, stack-specific entrypoint
+  <Capability>Service.java          # optional, application operation owner
+  <DomainType>.java                 # domain/model/entity types
+  web/                              # optional
+  application/                      # optional
+  domain/                           # optional
+  persistence/                      # optional
+
+src/test/java/<base>/<capability>/
+  <Capability>Test.java
+```
+
+The capability package is the architecture unit. Prefer co-locating related code under that package instead of spreading classes across global `controller`, `service`, `repository`, or `model` packages. A project dominated by global layer packages is not a feature-package project; use `sdd4j-package-by-layer` or define an explicit project mapping instead.
+
+## SDD4J Mapping
+
+When composed with SDD4J:
+
+- An SDD4J capability maps to one Java feature package.
+- The spec lives at the feature package's `package-info.java`.
+- The capability name maps to the final package segment unless `AGENTS.md` declares another pattern.
+- `## Boundary` operations map to public entrypoints or application operations inside the feature package.
+- `## Entities` entries map to domain, model, aggregate, value object, or persistence entity classes inside the feature package or its subpackages.
+- Internal helpers, configuration classes, mappers, repositories, adapters, and persistence details are implementation unless the spec explicitly declares them as contract-relevant entities or operations.
+- Requirement ids must resolve to their exact runner-visible forms in executable tests or cases under the mirrored test package or the stack's test location. Traces may use literal ids or resolvable symbols; JavaDoc and comments alone do not count.
+
+## Operation Mapping
+
+Map each transport-neutral operation to the narrowest stable code entrypoint:
+
+- For HTTP applications, prefer the application method behind the controller when that method is stable and testable.
+- If the controller method is the only stable boundary, map the operation to the controller method.
+- For event-driven code, map to the listener or handler method that receives the event.
+- For CLI code, map to the command or use-case method.
+
+Do not force every operation to have both controller and service methods. The stack skill decides idiomatic structure.
+
+## Drift Detection
+
+Detect spec-to-code gaps:
+
+- A `## Boundary` operation has no mapped entrypoint or application operation in the feature package.
+- A `## Entities` item has no matching domain/model/entity type when the architecture mapping says it should be materialized.
+- A requirement id has no executable test trace.
+
+Detect code-to-spec drift:
+
+- A public entrypoint or application operation in the feature package is not represented in `## Boundary`.
+- A domain/model/entity type appears contract-relevant but is absent from `## Entities`.
+- A test under the feature package references a requirement id not present in the spec.
+- Contract-relevant capability code lives outside the feature package without a declared shared-package or adapter-routing rule.
+
+Surface drift to the user. Do not rewrite the spec to match code without explicit instruction.
+
+## Fit And Rejection Rules
+
+This adapter fits when new capabilities can be added as self-contained packages and existing capabilities have stable package ownership.
+
+Reject or ask for a different mapping when:
+
+- Most capability code is organized primarily by technical layer.
+- A single capability must be split across unrelated package roots without an explicit mapping.
+- Multiple feature packages share the same mutable domain model without a declared shared contract.
+- The project wants BCE layer semantics inside each capability package; use `sdd4j-bce` instead.
+
+## AGENTS.md Override
+
+Use this compact project mapping when defaults do not fit:
+
+```md
+## SDD4J
+
+Architecture layout:
+- skill: `sdd4j-package-by-feature`
+- scope: primary project architecture
+- source root: `src/main/java`
+- base package: `com.acme`
+- capability package pattern: `com.acme.<capability>`
+- test package mirrors main package: true
+- entrypoint packages: same package, `web`, `application`
+- entity packages: same package, `domain`, `model`, `persistence`
+```
+
+If the project has feature packages plus a few shared packages, treat shared packages as cross-cutting implementation unless the SDD4J system doc or `AGENTS.md` declares them part of a capability contract.

@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "skills": {
+    "cats-effect-io": {
+      "source": "alexandru/skills",
+      "sourceType": "github",
+      "skillPath": "skills/cats-effect-io/SKILL.md",
+      "computedHash": "0e3bce1e512a78c67b0fc29f776a38f384b334eac35d4c23b98f709a73a9f3e6"
+    },
+    "cats-effect-resource": {
+      "source": "alexandru/skills",
+      "sourceType": "github",
+      "skillPath": "skills/cats-effect-resource/SKILL.md",
+      "computedHash": "2f08f20be482f4c3172391553e2d76321f769a12e6a3ddebe378567b1d013da2"
+    },
+    "cats-mtl-typed-errors": {
+      "source": "alexandru/skills",
+      "sourceType": "github",
+      "skillPath": "skills/cats-mtl-typed-errors/SKILL.md",
+      "computedHash": "3abed7de05656760442cb03a6184d3406e793fce7b65b8777d6f24508b494340"
+    },
+    "code-review": {
+      "source": "alexandru/skills",
+      "sourceType": "github",
+      "skillPath": "skills/code-review/SKILL.md",
+      "computedHash": "1a7ab3c0bd4cbb7891c2ab92aecf87f8494cc362a857ed548cbb9d7e659ea3ce"
+    },
+    "conventional-commit": {
+      "source": "soujava/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/conventional-commit/SKILL.md",
+      "computedHash": "14abf0d09ec0f5b9fa91532b5105d16a1580af3b9cc3da33aff95ee0faecbf64"
+    },
+    "scala-kindlings-derivation": {
+      "source": "alexandru/skills",
+      "sourceType": "github",
+      "skillPath": "skills/scala-kindlings-derivation/SKILL.md",
+      "computedHash": "c52833d7c8d85b7b3750264c1c72a5a799415dfbc6eab4f8ac23f4c3bdfa71bd"
+    },
+    "sdd4j": {
+      "source": "soujava/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/sdd4j/SKILL.md",
+      "computedHash": "3ac2c01dc7a6b1b92eff87fefb16247f37896e35253b83fbe8da511c6ea6e92a"
+    },
+    "sdd4j-bce": {
+      "source": "soujava/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/sdd4j-bce/SKILL.md",
+      "computedHash": "ff7ea3d06b1e837b394985a93eae2cbe326e45068a2be1a86d25da6971186214"
+    },
+    "sdd4j-ears-tests": {
+      "source": "soujava/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/sdd4j-ears-tests/SKILL.md",
+      "computedHash": "7f0b8795dbd068050986ba0c2b44412c80815db66f6aee715708777bcaf155ce"
+    },
+    "sdd4j-package-by-feature": {
+      "source": "soujava/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/sdd4j-package-by-feature/SKILL.md",
+      "computedHash": "def9f739b1854e3aaafc95322a8768076f48e5014de11aaa27b4b17f9769d754"
+    },
+    "sdd4j-package-by-layer": {
+      "source": "soujava/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/sdd4j-package-by-layer/SKILL.md",
+      "computedHash": "a95ee0767ebd92d60d364ce117deda9facb77846320cfaa8dcbf5b7350b2692a"
+    },
+    "simplify": {
+      "source": "alexandru/skills",
+      "sourceType": "github",
+      "skillPath": "skills/simplify/SKILL.md",
+      "computedHash": "8896e2af7826ec207b9b795ed0cb8d88531b94705b1ea089a2b6ec49adfddd5f"
+    }
+  }
+}
