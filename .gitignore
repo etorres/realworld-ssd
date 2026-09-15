@@ -14,3 +14,7 @@ project/project/
 # that is a real directory there was installed for local use only.
 .claude/skills/humanizer/
 .claude/skills/archify/
+
+# Plugin enablement for a marketplace plugin that is not vendored here, so a
+# fresh clone would enable something it does not have.
+.claude/settings.json
