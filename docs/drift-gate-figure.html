@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDD4J drift gate</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --paper:  #FBFBF9;
+    --ink:    #1A1C1B;
+    --muted:  #636865;
+    --soft:   #8B908C;
+    --rule:   #DEDFD8;
+    --accent: #1E3A5F;
+    --pass:   #2E7D4F;
+    --fail:   #B23A2B;
+    --font-sans:  'IBM Plex Sans', system-ui, sans-serif;
+    --font-serif: 'Newsreader', Georgia, serif;
+    --font-mono:  'IBM Plex Mono', ui-monospace, monospace;
+  }
+  body {
+    font-family: var(--font-sans);
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 3rem 1.5rem;
+  }
+  /* block + auto margins, not flex: a flex item will not shrink below the
+     SVG's 520px intrinsic width, which clipped the diagram on a phone. */
+  .frame { max-width: 560px; margin: 0 auto; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 0.66rem; font-weight: 500;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--soft);
+    margin-bottom: 0.45rem;
+  }
+  h1 {
+    font-family: var(--font-serif); font-size: 1.75rem; font-weight: 500;
+    line-height: 1.12; letter-spacing: -0.01em; margin-bottom: 0.5rem;
+  }
+  .standfirst {
+    font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55;
+    color: var(--muted); margin-bottom: 1.75rem; max-width: 48ch;
+  }
+  svg { display: block; width: 100%; height: auto; }
+  .colophon {
+    margin-top: 1.5rem; padding-top: 0.9rem; border-top: 1px solid var(--rule);
+    font-family: var(--font-mono); font-size: 0.66rem; color: var(--soft); line-height: 1.7;
+  }
+</style>
+</head>
+<body>
+<div class="frame">
+  <p class="eyebrow">Spec-driven development</p>
+  <h1>The drift gate</h1>
+  <p class="standfirst">What <code style="font-family:var(--font-mono);font-size:0.85em">sbt test</code> enforces on every build: two sources of requirement ids, compared per capability, in both directions.</p>
+
+<svg viewBox="0 0 520 880" role="img" aria-labelledby="sdd4j-gate-title sdd4j-gate-desc" xmlns="http://www.w3.org/2000/svg">
+  <title id="sdd4j-gate-title">SDD4J drift gate</title>
+  <desc id="sdd4j-gate-desc">Requirement ids declared in specification files and claimed by test names are scoped per capability, then checked in two directions. A statement with no test, or a test claiming an undeclared id, fails the build; passing both checks lets the build pass.</desc>
+
+  <defs>
+    <marker id="sdd4j-gate-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#636865"/>
+    </marker>
+    <marker id="sdd4j-gate-arrow-fail" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#B23A2B"/>
+    </marker>
+    <marker id="sdd4j-gate-arrow-pass" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#2E7D4F"/>
+    </marker>
+    <marker id="sdd4j-gate-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#1E3A5F"/>
+    </marker>
+  </defs>
+
+  <rect width="100%" height="100%" fill="#FBFBF9"/>
+
+  <!-- ============ connectors (drawn before boxes) ============ -->
+
+  <!-- spec files -> scope : down, left, down -->
+  <path d="M 140 112 L 140 152 Q 140 160 132 160 L 108 160 Q 100 160 100 168 L 100 196"
+        fill="none" stroke="#1E3A5F" stroke-width="1.5" marker-end="url(#sdd4j-gate-arrow-accent)"/>
+  <!-- requirement suites -> scope : down, left, down -->
+  <path d="M 380 112 L 380 152 Q 380 160 372 160 L 204 160 Q 196 160 196 168 L 196 196"
+        fill="none" stroke="#636865" stroke-width="1.5" marker-end="url(#sdd4j-gate-arrow)"/>
+
+  <!-- scope -> check A -->
+  <line x1="148" y1="272" x2="148" y2="326" stroke="#636865" stroke-width="1.5" marker-end="url(#sdd4j-gate-arrow)"/>
+  <!-- check A -> missing test -->
+  <line x1="248" y1="380" x2="288" y2="380" stroke="#B23A2B" stroke-width="1.5" marker-end="url(#sdd4j-gate-arrow-fail)"/>
+  <!-- check A -> check B -->
+  <line x1="148" y1="426" x2="148" y2="494" stroke="#636865" stroke-width="1.5" marker-end="url(#sdd4j-gate-arrow)"/>
+  <!-- check B -> orphan -->
+  <line x1="248" y1="548" x2="288" y2="548" stroke="#B23A2B" stroke-width="1.5" marker-end="url(#sdd4j-gate-arrow-fail)"/>
+  <!-- check B -> build passes -->
+  <line x1="148" y1="594" x2="148" y2="656" stroke="#2E7D4F" stroke-width="1.5" marker-end="url(#sdd4j-gate-arrow-pass)"/>
+
+  <!-- ============ arrow labels (mask + 6-10px gap) ============ -->
+  <rect x="36" y="126" width="88" height="13" rx="2" fill="#FBFBF9"/>
+  <text x="80" y="136" fill="#1E3A5F" font-size="8" font-family="'IBM Plex Mono', monospace" text-anchor="middle" letter-spacing="0.08em">DECLARED IDS</text>
+
+  <rect x="396" y="126" width="80" height="13" rx="2" fill="#FBFBF9"/>
+  <text x="436" y="136" fill="#636865" font-size="8" font-family="'IBM Plex Mono', monospace" text-anchor="middle" letter-spacing="0.08em">CLAIMED IDS</text>
+
+  <rect x="252" y="356" width="24" height="13" rx="2" fill="#FBFBF9"/>
+  <text x="264" y="366" fill="#B23A2B" font-size="8" font-family="'IBM Plex Mono', monospace" text-anchor="middle" letter-spacing="0.08em">NO</text>
+
+  <rect x="158" y="453" width="30" height="13" rx="2" fill="#FBFBF9"/>
+  <text x="173" y="463" fill="#636865" font-size="8" font-family="'IBM Plex Mono', monospace" text-anchor="middle" letter-spacing="0.08em">YES</text>
+
+  <rect x="252" y="524" width="24" height="13" rx="2" fill="#FBFBF9"/>
+  <text x="264" y="534" fill="#B23A2B" font-size="8" font-family="'IBM Plex Mono', monospace" text-anchor="middle" letter-spacing="0.08em">NO</text>
+
+  <rect x="158" y="618" width="30" height="13" rx="2" fill="#FBFBF9"/>
+  <text x="173" y="628" fill="#2E7D4F" font-size="8" font-family="'IBM Plex Mono', monospace" text-anchor="middle" letter-spacing="0.08em">YES</text>
+
+  <!-- ============ nodes ============ -->
+
+  <!-- 1. spec files (store) -->
+  <rect x="32" y="40" width="216" height="72" rx="6" fill="#FBFBF9"/>
+  <rect x="32" y="40" width="216" height="72" rx="6" fill="rgba(26,28,27,0.05)" stroke="#636865" stroke-width="1"/>
+  <rect x="40" y="48" width="34" height="12" rx="2" fill="none" stroke="rgba(99,104,101,0.45)" stroke-width="0.8"/>
+  <text x="57" y="57" fill="#636865" font-size="7" font-family="'IBM Plex Mono', monospace" text-anchor="middle" letter-spacing="0.08em">SPEC</text>
+  <text x="140" y="82" fill="#1A1C1B" font-size="12" font-weight="600" font-family="'IBM Plex Sans', sans-serif" text-anchor="middle">Spec files</text>
+  <text x="140" y="98" fill="#636865" font-size="9" font-family="'IBM Plex Mono', monospace" text-anchor="middle">6 package.scala</text>
+
+  <!-- 2. requirement suites (store) -->
+  <rect x="272" y="40" width="216" height="72" rx="6" fill="#FBFBF9"/>
+  <rect x="272" y="40" width="216" height="72" rx="6" fill="rgba(26,28,27,0.05)" stroke="#636865" stroke-width="1"/>
+  <rect x="280" y="48" width="34" height="12" rx="2" fill="none" stroke="rgba(99,104,101,0.45)" stroke-width="0.8"/>
+  <text x="297" y="57" fill="#636865" font-size="7" font-family="'IBM Plex Mono', monospace" text-anchor="middle" letter-spacing="0.08em">TEST</text>
+  <text x="380" y="82" fill="#1A1C1B" font-size="12" font-weight="600" font-family="'IBM Plex Sans', sans-serif" text-anchor="middle">Requirement suites</text>
+  <text x="380" y="98" fill="#636865" font-size="9" font-family="'IBM Plex Mono', monospace" text-anchor="middle">name built from the id</text>
+
+  <!-- 3. scope (FOCAL) -->
+  <rect x="32" y="196" width="232" height="76" rx="6" fill="#FBFBF9"/>
+  <rect x="32" y="196" width="232" height="76" rx="6" fill="rgba(30,58,95,0.07)" stroke="#1E3A5F" stroke-width="1.5"/>
+  <text x="148" y="232" fill="#1A1C1B" font-size="12" font-weight="600" font-family="'IBM Plex Sans', sans-serif" text-anchor="middle">Scope per capability</text>
+  <text x="148" y="250" fill="#1E3A5F" font-size="9" font-family="'IBM Plex Mono', monospace" text-anchor="middle">ids unique within one spec</text>
+
+  <!-- 4. check A (decision) -->
+  <path d="M 148 334 L 248 380 L 148 426 L 48 380 Z" fill="#FBFBF9"/>
+  <path d="M 148 334 L 248 380 L 148 426 L 48 380 Z" fill="none" stroke="#1A1C1B" stroke-width="1"/>
+  <text x="148" y="377" fill="#1A1C1B" font-size="12" font-weight="600" font-family="'IBM Plex Sans', sans-serif" text-anchor="middle">spec → test</text>
+  <text x="148" y="392" fill="#636865" font-size="9" font-family="'IBM Plex Mono', monospace" text-anchor="middle">has a test?</text>
+
+  <!-- 5. missing test (fail) -->
+  <rect x="296" y="348" width="192" height="64" rx="6" fill="#FBFBF9"/>
+  <rect x="296" y="348" width="192" height="64" rx="6" fill="rgba(178,58,43,0.08)" stroke="#B23A2B" stroke-width="1.2"/>
+  <text x="392" y="378" fill="#B23A2B" font-size="12" font-weight="600" font-family="'IBM Plex Sans', sans-serif" text-anchor="middle">Missing test</text>
+  <text x="392" y="394" fill="#B23A2B" font-size="9" font-family="'IBM Plex Mono', monospace" text-anchor="middle">a statement no test carries</text>
+
+  <!-- 6. check B (decision) -->
+  <path d="M 148 502 L 248 548 L 148 594 L 48 548 Z" fill="#FBFBF9"/>
+  <path d="M 148 502 L 248 548 L 148 594 L 48 548 Z" fill="none" stroke="#1A1C1B" stroke-width="1"/>
+  <text x="148" y="545" fill="#1A1C1B" font-size="12" font-weight="600" font-family="'IBM Plex Sans', sans-serif" text-anchor="middle">test → spec</text>
+  <text x="148" y="560" fill="#636865" font-size="9" font-family="'IBM Plex Mono', monospace" text-anchor="middle">id declared?</text>
+
+  <!-- 7. orphan id (fail) -->
+  <rect x="296" y="516" width="192" height="64" rx="6" fill="#FBFBF9"/>
+  <rect x="296" y="516" width="192" height="64" rx="6" fill="rgba(178,58,43,0.08)" stroke="#B23A2B" stroke-width="1.2"/>
+  <text x="392" y="546" fill="#B23A2B" font-size="12" font-weight="600" font-family="'IBM Plex Sans', sans-serif" text-anchor="middle">Orphan id</text>
+  <text x="392" y="562" fill="#B23A2B" font-size="9" font-family="'IBM Plex Mono', monospace" text-anchor="middle">drift, never absorbed</text>
+
+  <!-- 8. build passes (terminal) -->
+  <rect x="32" y="656" width="232" height="72" rx="20" fill="#FBFBF9"/>
+  <rect x="32" y="656" width="232" height="72" rx="20" fill="rgba(46,125,79,0.10)" stroke="#2E7D4F" stroke-width="1.5"/>
+  <text x="148" y="690" fill="#2E7D4F" font-size="12" font-weight="600" font-family="'IBM Plex Sans', sans-serif" text-anchor="middle">Build passes</text>
+  <text x="148" y="707" fill="#2E7D4F" font-size="9" font-family="'IBM Plex Mono', monospace" text-anchor="middle">118 ids traced · 120 tests</text>
+
+  <!-- ============ legend strip ============ -->
+  <line x1="32" y1="788" x2="488" y2="788" stroke="rgba(26,28,27,0.12)" stroke-width="0.8"/>
+  <text x="32" y="806" fill="#636865" font-size="8" font-family="'IBM Plex Mono', monospace" letter-spacing="0.14em">LEGEND</text>
+
+  <rect x="32" y="822" width="12" height="12" rx="2" fill="rgba(26,28,27,0.05)" stroke="#636865" stroke-width="1"/>
+  <text x="52" y="832" fill="#636865" font-size="8" font-family="'IBM Plex Mono', monospace">id source</text>
+
+  <rect x="140" y="822" width="12" height="12" rx="2" fill="rgba(30,58,95,0.07)" stroke="#1E3A5F" stroke-width="1.2"/>
+  <text x="160" y="832" fill="#636865" font-size="8" font-family="'IBM Plex Mono', monospace">scoping step</text>
+
+  <rect x="268" y="822" width="12" height="12" rx="2" fill="rgba(178,58,43,0.08)" stroke="#B23A2B" stroke-width="1.2"/>
+  <text x="288" y="832" fill="#636865" font-size="8" font-family="'IBM Plex Mono', monospace">red build</text>
+
+  <rect x="372" y="822" width="12" height="12" rx="6" fill="rgba(46,125,79,0.10)" stroke="#2E7D4F" stroke-width="1.2"/>
+  <text x="392" y="832" fill="#636865" font-size="8" font-family="'IBM Plex Mono', monospace">green build</text>
+</svg>
+
+  <p class="colophon">
+    Enforced by SpecTraceSuite on every <span style="color:var(--ink)">sbt test</span>. Ids are unique per capability, not globally.<br>
+    The RealWorld Hurl suite is run separately and is not part of the build.
+  </p>
+</div>
+</body>
+</html>
