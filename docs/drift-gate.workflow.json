@@ -1,0 +1,246 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "SDD4J drift gate",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1100,
+      660
+    ],
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "database": {
+          "label": "Declared ids"
+        },
+        "backend": {
+          "label": "Parsing and scoping"
+        },
+        "security": {
+          "label": "Check and failure"
+        },
+        "cloud": {
+          "label": "Build outcome"
+        }
+      }
+    }
+  },
+  "lanes": [
+    {
+      "id": "specs",
+      "label": "Capability specs"
+    },
+    {
+      "id": "tests",
+      "label": "Requirement suites"
+    },
+    {
+      "id": "gate",
+      "label": "SpecTraceSuite"
+    },
+    {
+      "id": "stop",
+      "label": "Drift stops the build",
+      "variant": "exception"
+    }
+  ],
+  "phases": [
+    {
+      "id": "collect",
+      "label": "Collect ids",
+      "fromCol": 0,
+      "toCol": 0
+    },
+    {
+      "id": "compare",
+      "label": "Compare per capability",
+      "fromCol": 1,
+      "toCol": 3,
+      "variant": "emphasis"
+    },
+    {
+      "id": "verdict",
+      "label": "Verdict",
+      "fromCol": 4,
+      "toCol": 4,
+      "variant": "dashed"
+    }
+  ],
+  "mainPath": [
+    "spec_files",
+    "scope",
+    "forward",
+    "reverse",
+    "green"
+  ],
+  "semanticChecks": {
+    "allowedRoots": [
+      "spec_files",
+      "suites"
+    ],
+    "allowedTerminals": [
+      "green",
+      "gap",
+      "orphan"
+    ],
+    "requiredPaths": [
+      {
+        "from": "spec_files",
+        "to": "green"
+      },
+      {
+        "from": "suites",
+        "to": "orphan"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "id": "spec_files",
+      "lane": "specs",
+      "col": 0,
+      "type": "database",
+      "label": "Spec files",
+      "sublabel": "6 package.scala docs",
+      "tag": "Rn.m and Sn",
+      "width": 152
+    },
+    {
+      "id": "suites",
+      "lane": "tests",
+      "col": 0,
+      "type": "backend",
+      "label": "Requirement suites",
+      "sublabel": "test name built from the id",
+      "width": 152,
+      "tag": "cannot drift"
+    },
+    {
+      "id": "scope",
+      "lane": "gate",
+      "col": 1,
+      "type": "backend",
+      "label": "Scope per spec",
+      "sublabel": "ids unique within one spec",
+      "tag": "R1.1 exists in three specs",
+      "width": 152
+    },
+    {
+      "id": "forward",
+      "lane": "gate",
+      "col": 2,
+      "type": "security",
+      "label": "Spec to test",
+      "sublabel": "every statement has a test",
+      "width": 152
+    },
+    {
+      "id": "reverse",
+      "lane": "gate",
+      "col": 3,
+      "type": "security",
+      "label": "Test to spec",
+      "sublabel": "every claimed id is declared",
+      "width": 152
+    },
+    {
+      "id": "green",
+      "lane": "gate",
+      "col": 4,
+      "type": "cloud",
+      "label": "Build passes",
+      "sublabel": "118 ids traced, 120 tests",
+      "width": 152
+    },
+    {
+      "id": "gap",
+      "lane": "stop",
+      "col": 2,
+      "type": "security",
+      "label": "Missing test",
+      "sublabel": "a statement no test carries",
+      "width": 152
+    },
+    {
+      "id": "orphan",
+      "lane": "stop",
+      "col": 3,
+      "type": "security",
+      "label": "Orphan id",
+      "sublabel": "drift, never absorbed",
+      "width": 152
+    }
+  ],
+  "edges": [
+    {
+      "from": "spec_files",
+      "to": "scope",
+      "label": "declared Rn.m",
+      "variant": "emphasis"
+    },
+    {
+      "from": "suites",
+      "to": "scope",
+      "label": "claimed ids",
+      "role": "branch"
+    },
+    {
+      "from": "scope",
+      "to": "forward",
+      "variant": "emphasis"
+    },
+    {
+      "from": "forward",
+      "to": "reverse",
+      "label": "and",
+      "variant": "emphasis"
+    },
+    {
+      "from": "reverse",
+      "to": "green",
+      "label": "both clean",
+      "variant": "emphasis"
+    },
+    {
+      "from": "forward",
+      "to": "gap",
+      "label": "no test",
+      "variant": "security",
+      "role": "error"
+    },
+    {
+      "from": "reverse",
+      "to": "orphan",
+      "label": "undeclared",
+      "variant": "security",
+      "role": "error"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "What the gate guarantees",
+      "items": [
+        "Every requirement is carried by a test name, enforced rather than reviewed",
+        "Every id a test claims exists in its own capability's spec"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Why both directions",
+      "items": [
+        "Test to spec is what stops behaviour creeping past the contract",
+        "An orphan is surfaced for a human, never absorbed by widening the spec"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "The blind spot it once had",
+      "items": [
+        "Matching one flat set let users' R1.1 satisfy tags' R1.1",
+        "Found only by deleting a trace on purpose and expecting red"
+      ]
+    }
+  ]
+}

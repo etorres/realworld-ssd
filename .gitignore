@@ -9,5 +9,8 @@ project/project/
 .DS_Store
 .idea/
 
-# Locally installed skill, deliberately not shipped with the project.
+# Locally installed skills, deliberately not shipped with the project. Vendored
+# skills live in .agents/skills and are symlinked into .claude/skills; anything
+# that is a real directory there was installed for local use only.
 .claude/skills/humanizer/
+.claude/skills/archify/
