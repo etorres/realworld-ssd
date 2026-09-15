@@ -8,3 +8,6 @@ project/project/
 *.log
 .DS_Store
 .idea/
+
+# Locally installed skill, deliberately not shipped with the project.
+.claude/skills/humanizer/
