@@ -1,0 +1,667 @@
+<title>The Drift Gate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+  :root {
+    --ground:   #FBFBF9;
+    --surface:  #F3F3EF;
+    --sunken:   #EAEAE4;
+    --ink:      #1A1C1B;
+    --muted:    #636865;
+    --faint:    #8B908C;
+    --rule:     #DEDFD8;
+    --accent:   #1E3A5F;
+    --accent-soft: #E7EDF4;
+    --pass:     #2E7D4F;
+    --fail:     #B23A2B;
+    --term-bg:  #1B1F22;
+    --term-ink: #DCDFDC;
+
+    --measure: 68ch;
+    --step--1: 0.86rem;
+    --step-0:  1.0625rem;
+    --step-1:  1.32rem;
+    --step-2:  1.72rem;
+    --step-3:  2.3rem;
+    --step-4:  clamp(2.4rem, 1.6rem + 3.4vw, 3.6rem);
+
+    --serif: "Newsreader", Georgia, "Times New Roman", serif;
+    --sans:  "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    --mono:  "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:   #131618;
+      --surface:  #1A1E21;
+      --sunken:   #21262A;
+      --ink:      #E4E7E5;
+      --muted:    #9BA3A0;
+      --faint:    #767E7B;
+      --rule:     #2B3237;
+      --accent:   #9BBEE0;
+      --accent-soft: #1D2A38;
+      --pass:     #66B98A;
+      --fail:     #E08272;
+      --term-bg:  #0E1113;
+      --term-ink: #D6DAD7;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:   #131618;
+    --surface:  #1A1E21;
+    --sunken:   #21262A;
+    --ink:      #E4E7E5;
+    --muted:    #9BA3A0;
+    --faint:    #767E7B;
+    --rule:     #2B3237;
+    --accent:   #9BBEE0;
+    --accent-soft: #1D2A38;
+    --pass:     #66B98A;
+    --fail:     #E08272;
+    --term-bg:  #0E1113;
+    --term-ink: #D6DAD7;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: var(--step-0);
+    line-height: 1.68;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: var(--measure);
+    margin: 0 auto;
+    padding: clamp(2rem, 5vw, 4.5rem) clamp(1.1rem, 5vw, 2rem) 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.1rem;
+  }
+
+  /* ---------- masthead ---------- */
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin: 0;
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-size: var(--step-4);
+    font-weight: 500;
+    line-height: 1.08;
+    letter-spacing: -0.018em;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  .deck {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: var(--step-1);
+    line-height: 1.5;
+    color: var(--muted);
+    text-wrap: pretty;
+    margin: 0;
+    max-width: 56ch;
+  }
+
+  .byline {
+    font-family: var(--mono);
+    font-size: var(--step--1);
+    color: var(--faint);
+    border-top: 1px solid var(--rule);
+    padding-top: 0.9rem;
+    margin: 0;
+  }
+
+  /* ---------- hero: the gate output ---------- */
+
+  .gate {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    background: var(--surface);
+    overflow: hidden;
+  }
+
+  .gate-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+
+  .gate-body { overflow-x: auto; padding: 1rem; }
+
+  .gate table {
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: var(--step--1);
+    width: 100%;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .gate td { padding: 0.22rem 1.2rem 0.22rem 0; white-space: nowrap; }
+  .gate td.cap { color: var(--ink); }
+  .gate td.num { color: var(--accent); font-weight: 500; }
+  .gate td.state { color: var(--pass); }
+
+  .gate-foot {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: var(--step--1);
+    color: var(--pass);
+  }
+
+  /* two-direction annotation */
+  .directions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: 0.9rem;
+  }
+
+  .direction {
+    border-left: 2px solid var(--accent);
+    padding: 0.15rem 0 0.15rem 0.85rem;
+  }
+
+  .direction b {
+    display: block;
+    font-family: var(--mono);
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--accent);
+    margin-bottom: 0.15rem;
+  }
+
+  .direction span { font-size: 0.95rem; color: var(--muted); line-height: 1.55; }
+
+  /* ---------- running text ---------- */
+
+  h2 {
+    font-family: var(--serif);
+    font-size: var(--step-2);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+    margin: 1.7rem 0 -0.6rem;
+    padding-top: 1.7rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  h3 {
+    font-family: var(--sans);
+    font-size: var(--step-0);
+    font-weight: 600;
+    margin: 0.7rem 0 -1.1rem;
+  }
+
+  p { margin: 0; text-wrap: pretty; }
+
+  a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+  strong { font-weight: 600; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.88em;
+    background: var(--sunken);
+    padding: 0.1em 0.34em;
+    border-radius: 2px;
+  }
+
+  /* requirement id chip — the motif of the whole piece */
+  .rid {
+    font-family: var(--mono);
+    font-size: 0.82em;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 0.1em 0.4em;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  pre {
+    margin: 0;
+    padding: 1rem 1.1rem;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    overflow-x: auto;
+    font-size: var(--step--1);
+    line-height: 1.6;
+  }
+
+  pre code { background: none; padding: 0; font-size: inherit; }
+
+  pre.term {
+    background: var(--term-bg);
+    border-color: var(--term-bg);
+    color: var(--term-ink);
+  }
+
+  pre.term .ok   { color: var(--pass); }
+  pre.term .bad  { color: var(--fail); }
+  pre.term .dim  { color: #7C8683; }
+
+  /* ---------- tables ---------- */
+
+  .scroll { overflow-x: auto; }
+
+  table.map {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.95rem;
+    min-width: 34rem;
+  }
+
+  table.map th {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--faint);
+    font-weight: 500;
+    padding: 0 1rem 0.5rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  table.map td {
+    padding: 0.55rem 1rem 0.55rem 0;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    color: var(--muted);
+  }
+
+  table.map td:last-child { color: var(--ink); }
+  table.map code { font-size: 0.84em; }
+
+  /* ---------- the eleven ---------- */
+
+  ol.findings {
+    list-style: none;
+    counter-reset: f;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
+  ol.findings li {
+    counter-increment: f;
+    display: grid;
+    grid-template-columns: 2.1rem 1fr;
+    gap: 0.6rem;
+    align-items: baseline;
+  }
+
+  ol.findings li::before {
+    content: counter(f, decimal-leading-zero);
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- pull quote ---------- */
+
+  .pull {
+    font-family: var(--serif);
+    font-size: var(--step-1);
+    line-height: 1.42;
+    color: var(--ink);
+    border-left: 2px solid var(--accent);
+    padding: 0.2rem 0 0.2rem 1.1rem;
+    margin: 0.4rem 0;
+    text-wrap: pretty;
+  }
+
+  /* ---------- ledger ---------- */
+
+  .ledger {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .ledger div {
+    background: var(--surface);
+    padding: 0.9rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .ledger dt {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin: 0;
+  }
+
+  .ledger dd {
+    font-family: var(--mono);
+    font-size: var(--step-1);
+    font-weight: 600;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    margin: 0;
+    line-height: 1.15;
+  }
+
+  ul.plain {
+    margin: 0;
+    padding-left: 1.15rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  ul.plain li { padding-left: 0.2rem; }
+
+  .colophon {
+    border-top: 1px solid var(--rule);
+    padding-top: 1.1rem;
+    font-size: var(--step--1);
+    color: var(--muted);
+    font-family: var(--mono);
+    line-height: 1.7;
+  }
+
+
+  /* ---------- abbreviations, as document furniture ---------- */
+
+  /* Tooltip only. No underline, no colour: the strip below carries the visible duty. */
+  abbr[title] {
+    text-decoration: none;
+    border-bottom: none;
+    cursor: help;
+  }
+
+  .terms {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.3rem 1rem;
+    margin: 0;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--rule);
+    font-size: var(--step--1);
+    line-height: 1.5;
+  }
+
+  .terms dt {
+    font-family: var(--mono);
+    font-weight: 600;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .terms dd { margin: 0; color: var(--muted); }
+
+  @media (max-width: 30rem) {
+    .terms { grid-template-columns: 1fr; gap: 0.1rem; }
+    .terms dd { margin-bottom: 0.5rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+
+<article class="page">
+
+  <header style="display:flex; flex-direction:column; gap:1.1rem;">
+    <p class="eyebrow">Spec-driven development · Scala 3 · Draft</p>
+    <h1>My spec-driven build went green while a requirement had no test at all</h1>
+    <p class="deck">Building a RealWorld backend in Scala 3 with SDD4J. The gate caught eleven contract errors before any code existed, and I only found the hole in it by breaking it on purpose.</p>
+    <p class="byline">118 traced statements · 120 tests · 13/13 conformance files</p>
+
+    <dl class="terms">
+      <dt>SDD4J</dt><dd>Spec-Driven Development for Java</dd>
+      <dt>EARS</dt><dd>Easy Approach to Requirements Syntax, a template that turns a requirement into one testable statement</dd>
+      <dt>BC</dt><dd>business component, the unit of code a single specification governs</dd>
+    </dl>
+  </header>
+
+  <p>Every project I've worked on has had specifications that were true on the day they were written.</p>
+
+  <p>Writing a good one is the easy half. The hard half is keeping it true three commits later. So I ran an experiment: build a complete backend, checked against an external suite, where the specification is a build artifact. Adding a requirement turns the build red until something proves it. Writing code that no requirement describes turns the build red too.</p>
+
+  <p>The target was <a href="https://docs.realworld.show/introduction/">RealWorld</a>, the "Medium clone" API spec that exists so implementations can be compared against each other. It ships an <a href="https://github.com/realworld-apps/realworld/tree/main/specs/api">official conformance suite</a>, which runs under <a href="https://hurl.dev/">Hurl</a> or Bruno, so I couldn't grade my own homework. The stack was <a href="https://www.scala-lang.org/">Scala 3</a> and <a href="https://typelevel.org/">Typelevel</a>: <a href="https://typelevel.org/cats-effect/">cats-effect</a>, <a href="https://http4s.org/">http4s</a>, <a href="https://circe.github.io/circe/">circe</a>, <a href="https://typelevel.org/cats-mtl/">cats-mtl</a>. The method was <a href="https://github.com/soujava/agent-skills"><abbr title="Spec-Driven Development for Java">SDD4J</abbr></a>, which is written for Java.</p>
+
+  <div class="gate">
+    <div class="gate-head"><span>sbt test · spec trace coverage</span><span>118 ids claimed</span></div>
+    <div class="gate-body">
+      <table>
+        <tbody>
+          <tr><td class="cap">system</td><td class="num">3/3</td><td class="state">traced</td></tr>
+          <tr><td class="cap">articles</td><td class="num">48/48</td><td class="state">traced</td></tr>
+          <tr><td class="cap">users</td><td class="num">32/32</td><td class="state">traced</td></tr>
+          <tr><td class="cap">profiles</td><td class="num">16/16</td><td class="state">traced</td></tr>
+          <tr><td class="cap">comments</td><td class="num">14/14</td><td class="state">traced</td></tr>
+          <tr><td class="cap">tags</td><td class="num">5/5</td><td class="state">traced</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="gate-foot">Passed: Total 120, Failed 0, Errors 0, Passed 120</div>
+  </div>
+
+  <div class="directions">
+    <div class="direction"><b>spec → test</b><span>Every requirement must be carried by a test name. A new statement with no test is a red build.</span></div>
+    <div class="direction"><b>test → spec</b><span>Every id a test claims must exist in its capability's spec. An orphan is drift, never absorbed.</span></div>
+  </div>
+
+  <p>It ended up as 115 <abbr title="Easy Approach to Requirements Syntax">EARS</abbr> requirements across five business components, plus three system invariants that belong to no single component, and 120 tests. The conformance suite passed 13 of 13 files over 154 requests on the first run. 467 lines of specification govern 2,290 lines of implementation.</p>
+
+  <p>The passing suite is the least useful thing I can tell you about it. What I actually got was a list of things the gate caught before any code existed, plus the discovery that the gate had been lying to me for two sessions.</p>
+
+  <h2>Making a Java-shaped method speak Scala 3</h2>
+
+  <p>SDD4J puts a capability's contract in <code>package-info.java</code>, sitting in the same directory as the code it governs, written as a Markdown doc comment. Requirements use EARS phrasing ("If the email is already registered, then the <abbr title="business component">BC</abbr> shall reject the registration as a conflict"), each with a stable id, and each id has to be carried by a test.</p>
+
+  <p>Scala 3 has no <code>package-info.java</code>. The first job was a binding mapping, written into <code>AGENTS.md</code> so every future session reads the same rules:</p>
+
+  <div class="scroll">
+    <table class="map">
+      <thead><tr><th>SDD4J (Java)</th><th>This project (Scala 3)</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;component&gt;/package-info.java</code></td><td><code>&lt;component&gt;/package.scala</code>, one scaladoc on the package clause</td></tr>
+        <tr><td>boundary op → public Java method</td><td>method on <code>trait &lt;Bc&gt;[F[_]]</code>, plus its http4s route</td></tr>
+        <tr><td><code>## Entities</code> → entity classes</td><td><code>opaque type</code>, <code>enum</code>, <code>case class</code> in <code>entity</code></td></tr>
+        <tr><td><code>@ParameterizedTest</code></td><td><code>List(rows).foreach { test(s"$id — $name") }</code></td></tr>
+        <tr><td><code>{Bc}Requirement</code> enum</td><td>the literal string <span class="rid">R1.2</span> opening the test name</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>A capability spec file contains the comment and the package clause, and nothing else:</p>
+
+<pre><code>/** # Tags
+  * &gt; Own the set of tags in use across the system.
+  *
+  * ## Boundary
+  * - `register-tags` — add the tags an article declares to the set in use
+  * - `list-tags` — return every tag in use
+  *
+  * ## Requirements
+  *
+  * ### R1: Register tags in use
+  * - R1.1 — When tags are registered, the BC shall add each of them to the set of tags in use.
+  * - R1.2 — When a tag that is already in use is registered again, the BC shall leave the set unchanged.
+  * - R1.3 — If a registered tag is blank, then the BC shall ignore it. _(why: `articles` should not have
+  *   to sanitise before calling)_
+  *
+  * … R2, Entities and Out of scope omitted
+  */
+package realworld.tags</code></pre>
+
+  <p>That produces a compiler warning ("No class, trait or object is defined in the compilation unit"), which I suppress with one narrow <code>-Wconf</code> rule. Keeping the spec file free of code was worth a line of build configuration.</p>
+
+  <p>Two <a href="https://scalameta.org/scalafmt/">scalafmt</a> settings matter more than they look: <code>docstrings.style = keep</code> and <code>docstrings.wrap = no</code>. Without them the formatter reflows your requirement statements. Losing the wording of a requirement to a code formatter would be a particularly stupid way to fail.</p>
+
+  <h2>The gate</h2>
+
+  <p>The trace convention is deliberately dumb. A requirement id is traced by being the literal prefix of a test name, so there's no annotation to apply and no registry to keep in sync:</p>
+
+<pre><code>abstract class RequirementSuite[Setting] extends CatsEffectSuite:
+  protected def setting: IO[Setting]
+
+  protected def requirements(rows: (String, String, Setting =&gt; IO[Unit])*)(using munit.Location): Unit =
+    rows.foreach: (id, statement, check) =&gt;
+      test(s"$id — $statement")(setting.flatMap(check))</code></pre>
+
+  <p>Because the test name is built from the id and nowhere else, the name the runner prints can't drift from the id the spec declares. A requirement group becomes a table:</p>
+
+<pre><code>class RegisterTagsSuite extends RequirementSuite[TagsFixture]:
+  requirements(
+    ("R1.2", "leaves the set unchanged when a tag already in use is registered again",
+      fixture =&gt;
+        for
+          _      &lt;- fixture.tags.registerTags(List("dragons", "training"))
+          before &lt;- fixture.inUse
+          // Once again in a later call, and twice within a single one.
+          _      &lt;- fixture.tags.registerTags(List("dragons"))
+          _      &lt;- fixture.tags.registerTags(List("training", "training"))
+          after  &lt;- fixture.inUse
+        yield
+          assertEquals(after, before, "re-registering a tag already in use changed the set")
+          assertEquals(after.count(_ == "dragons"), 1)),
+    …
+  )</code></pre>
+
+  <p>Then one suite, <code>SpecTraceSuite</code>, reads the spec files and the test sources as text and fails the build in both directions shown at the top of this page.</p>
+
+  <p class="pull">That second direction is the one that does the work. It's what stops the specification from turning into a description of whatever the code already does.</p>
+
+  <p>Capabilities with no tests yet get reported as pending rather than failed, so an unbuilt capability stays visible without holding the build hostage.</p>
+
+  <h2>Eleven things the gate caught before any code</h2>
+
+  <p>RealWorld has prose documentation and an executable Hurl suite, and the docs themselves say the tests are the source of truth. I wrote that down as a decision, D9: where the suite and the prose disagree, the suite wins and the spec gets corrected. Then I made a habit of reading a capability's Hurl file before authoring its requirements.</p>
+
+  <p>They disagreed eleven times. Every one of these arrived as a question about the specification rather than as a failing conformance run at the end.</p>
+
+  <ol class="findings">
+    <li><span>Duplicate email or username returns 409, not 422. The prose lumps everything under "validation failure".</span></li>
+    <li><span>The blank-field message is <code>"can't be blank"</code>, where the docs say <code>"can't be empty"</code>.</span></li>
+    <li><span>Passwords have an 8-character floor and must accept at least 64. That's <a href="https://pages.nist.gov/800-63-3/sp800-63b.html">NIST SP 800-63B</a>, and it's invisible in the prose.</span></li>
+    <li><span><code>bio</code> and <code>image</code> are three-state. Omitted means unchanged; both <code>""</code> and <code>null</code> mean clear.</span></li>
+    <li><span><code>email</code>, <code>username</code> and <code>password</code> are three-state too, except that for them empty is a rejection rather than a clear.</span></li>
+    <li><span>A wrong password returns <code>credentials: invalid</code>, deliberately indistinguishable from an unregistered address.</span></li>
+    <li><span>A missing token returns <code>token: is missing</code>, which the prose never mentions.</span></li>
+    <li><span>Listings leave the article body out entirely. Reading a single article includes it. That's two projections, where I had specified one.</span></li>
+    <li><span>Tag order is contract. <code>tagList[0]</code> and <code>tagList[1]</code> are asserted positionally.</span></li>
+    <li><span><code>PUT /articles/:slug</code> accepts <code>tagList</code>, where omitting preserves, <code>[]</code> clears, and <code>null</code> is a 422. The whole field was missing from my update operation.</span></li>
+    <li><span>Comment ids are integers. A UUID satisfies "unique across every comment" and fails the suite.</span></li>
+  </ol>
+
+  <p>None of these are hard problems. Every one of them is a quiet thirty-minute detour if you find it in a red conformance run at the end, and a two-minute spec edit if you find it at the start.</p>
+
+  <h2>Two blockers no specification could have shown</h2>
+
+  <p>Those eleven were all findable by reading the contract carefully. The next two only turned up because the architecture refused to let me cheat.</p>
+
+  <p>The Boundary-Control-Entity adapter enforces one hard rule: a component reaches another only through that component's boundary, and only along an edge declared in the system doc. No reaching into someone else's storage.</p>
+
+  <h3>Publishing data you have no way to obtain</h3>
+
+  <p><code>profiles</code> has to publish a user's <code>username</code>, <code>bio</code> and <code>image</code>. Those live in <code>users</code>, which deliberately exposes an account to nobody but its owner, since <code>get-current-user</code> is owner-only by design. So <code>profiles</code> was specified to publish data it had no declared way to reach. Both specs were internally coherent. Together they were impossible.</p>
+
+  <p>The fix was a new <code>users</code> boundary operation, <code>describe-user</code>, returning a type that has no email and no credential in it. "Never disclose the credential" became structural instead of a matter of discipline.</p>
+
+  <h3>A reference that could rot</h3>
+
+  <p><code>articles</code> stores its author by <code>UserId</code> rather than username, because <span class="rid">R4.1</span> lets a username change and a stored reference mustn't rot. But <code>describe-user</code> looked up by username. Nothing went from <code>UserId</code> to an account, so an article couldn't render its own author.</p>
+
+  <p>That produced two more contract changes: <code>users</code> answering by identity as well as by name, and <code>profiles</code> gaining <code>view-author</code> so that no component ever assembles a Profile that <code>profiles</code> is supposed to own.</p>
+
+  <p>Both blockers surfaced during <code>apply</code>, the mode that writes code, and both stopped it dead, because in SDD4J <code>apply</code> isn't allowed to write contracts. That constraint felt bureaucratic right up until it caught a design error I'd otherwise have papered over with a convenient shortcut.</p>
+
+  <h2>One bug in the gate, and one in a comment</h2>
+
+  <p>After adding <code>tags</code>, the coverage report said "36 ids claimed by tests" when 52 were traced. I was matching requirement ids in one flat global set, but ids are only unique within a capability. <code>users</code>, <code>profiles</code> and <code>tags</code> all declare an <span class="rid">R1.1</span>.</p>
+
+  <p>I proved the hole before fixing it. I renamed <code>tags</code> <span class="rid">R1.1</span> to <span class="rid">R1.9</span> in its test, leaving <code>tags</code> <span class="rid">R1.1</span> with no test at all, and ran the build:</p>
+
+<pre class="term"><code><span class="ok">Passed: Total 54, Failed 0</span></code></pre>
+
+  <p>Green. Both checks were fooled at once. The gap check saw <span class="rid">R1.1</span> satisfied by <em>users'</em> R1.1, and the orphan check saw <span class="rid">R1.9</span> declared by <em>users'</em> R1.9. This had been quietly weakening two capabilities for two sessions. Their coverage happened to be genuine, but the gate wasn't the reason for it.</p>
+
+  <p>After scoping traces to the owning capability, the same mutation gives:</p>
+
+<pre class="term"><code><span class="bad">1 requirement(s) have no test carrying their id:</span>
+  tags: R1.1
+<span class="bad">1 test(s) trace an id their capability's spec does not declare:</span>
+  tags: R1.9
+<span class="bad">Failed: Total 54, Failed 2</span></code></pre>
+
+  <p>The second bug was a comment. I added a UTC timestamp formatter and justified it in the scaladoc: "<code>Instant.toString</code> drops the seconds when they are zero." It doesn't. What it drops is the fractional part, when the nanoseconds are zero. I'd written a plausible-sounding rationale, and it survived three sessions unchallenged because it was a comment, and comments aren't tested.</p>
+
+  <p>The rule was still worth keeping, since a rendered shape that changes depending on what time it is makes for a bad rendered shape. It became a system invariant with a test pinning the exact case. But a <em>why</em> in a comment isn't evidence. Mine was wrong, and nothing in my process was pointed at it.</p>
+
+  <p>That's the same lesson as the gate bug. I only trust <code>SpecTraceSuite</code> because I broke it on purpose five times across the project (untraced requirement, orphan id, swallowed token, cross-capability collision, platform timestamp) and confirmed each time that exactly one thing failed, and that it was the right one.</p>
+
+  <p class="pull">An unverified verifier is just a comment that compiles.</p>
+
+  <h2>What it cost, what it bought</h2>
+
+  <p>The overhead is real and I won't pretend otherwise. 118 traced statements is 467 lines of prose to write and keep honest. Test code came out at 2,750 lines against 2,290 lines of implementation, so roughly one and a fifth lines of test for every line of code. Four times, <code>apply</code> stopped and handed a decision back to me instead of proceeding, and each of those was a round trip.</p>
+
+  <dl class="ledger">
+    <div><dt>Requirements</dt><dd>118</dd></div>
+    <div><dt>Tests</dt><dd>120</dd></div>
+    <div><dt>Spec lines</dt><dd>467</dd></div>
+    <div><dt>Conformance</dt><dd>13/13</dd></div>
+  </dl>
+
+  <p>Against that, the conformance suite passed on the first run: 13 files, 154 requests, no fixes. That isn't luck. It's the eleven corrections arriving as spec questions instead of failures. Every requirement has a test and every test maps to a requirement, enforced rather than reviewed. The architecture caught two design errors that would otherwise have shown up as awkward code, and both times the fix was a contract change with a recorded rationale. Ten decisions are written down with the alternatives I rejected, so the next person to ask "why isn't this Postgres?" gets an answer instead of an archaeology project.</p>
+
+  <p>The honest caveat is that this domain came with an executable external oracle. RealWorld handed me a suite that could tell me I was wrong. Most projects don't have one, and without it a spec-driven loop can converge confidently on the wrong contract. The drift gate still works without an oracle, but the eleven catches above came from having something authoritative to check against.</p>
+
+  <p>The next experiment is already set up. Decision D3 put every repository behind a <code>Ref</code>-backed in-memory implementation specifically so it can be swapped for Postgres later. A correct swap should touch zero requirement statements and leave all 118 traces intact. If it forces a spec change, that's the interesting result, because it means my specifications were describing my implementation all along.</p>
+
+  <p class="colophon">
+    Code: <a href="https://github.com/etorres/realworld-ssd">github.com/etorres/realworld-ssd</a><br>
+    Scala 3.8.4 · cats-effect 3.7.1 · http4s 0.23.37 · cats-mtl 1.7.0 · <a href="https://github.com/typelevel/munit-cats-effect">munit-cats-effect</a> 2.2.0<br>
+    Built with <a href="https://github.com/soujava/agent-skills">SDD4J</a> and <a href="https://claude.com/claude-code">Claude Code</a>.
+  </p>
+
+</article>
