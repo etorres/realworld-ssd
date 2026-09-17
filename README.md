@@ -64,7 +64,7 @@ specifications, and how its Java-shaped ideas carry over to Scala — is in
 
 ## Status
 
-All six capabilities are applied end to end over http4s with in-memory storage: accounts and tokens,
+All five capabilities are applied end to end over http4s with in-memory storage: accounts and tokens,
 public profiles and the follow graph, the tag registry, the whole article surface — publishing, browsing
 with filters and pagination, the feed, updates, deletion and favorites — and comments.
 
@@ -124,3 +124,20 @@ Configuration is read from the environment, all of it optional:
 | `REALWORLD_BCRYPT_LOG_ROUNDS` | `10` |
 
 Storage is in-memory, so everything is forgotten on restart. That is decision D3, not an oversight.
+
+## What's next
+
+Decision D3 chose in-memory storage so it could be swapped later. The second experiment tests whether
+the specifications were describing behaviour or describing the implementation: a correct swap to
+Postgres should touch zero requirement statements and leave all 118 traces intact.
+
+[`docs/postgres-swap.md`](docs/postgres-swap.md) is the pre-registration — the swap surface, the
+hazards found by reading the code, and the three outcomes fixed in advance so the result cannot be
+decided after the fact.
+
+```bash
+scripts/spec-baseline.sh    # 118 requirement statements, unchanged since the baseline
+```
+
+`SpecTraceSuite` guards the set of requirement ids. This guards their wording, which is the part a
+storage swap would be tempted to adjust.
