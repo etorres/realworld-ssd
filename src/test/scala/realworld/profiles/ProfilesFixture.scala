@@ -6,10 +6,13 @@ import org.http4s.{HttpApp, Method, Request, Response, Uri}
 
 import realworld.Rejections
 import realworld.profiles.boundary.{Profiles, ProfilesRoutes}
+import realworld.profiles.control.FollowRepository
 import realworld.profiles.entity.ProfileError
+import realworld.support.TestDatabase
 import realworld.support.http.Api
 import realworld.users.boundary.{CallerAuth, RegisterUser, UpdateUser, Users, UsersRoutes}
 import realworld.users.control.{FieldUpdate, Session}
+import realworld.users.control.UserRepository
 import realworld.users.entity.{AuthToken, UserError}
 import realworld.users.UsersFixture
 
@@ -24,8 +27,14 @@ object ProfilesFixture:
 
   def apply(): IO[ProfilesFixture] =
     for
-      users <- Users.inMemory[IO](UsersFixture.JwtSecret, UsersFixture.TokenTtl, UsersFixture.BcryptLogRounds)
-      profiles <- Profiles.inMemory[IO](users)
+      pool <- TestDatabase.fresh(UserRepository.Tables ++ FollowRepository.Tables)
+      users <- Users.postgres[IO](
+        pool,
+        UsersFixture.JwtSecret,
+        UsersFixture.TokenTtl,
+        UsersFixture.BcryptLogRounds
+      )
+      profiles = Profiles.postgres[IO](users, pool)
     yield
       val caller = CallerAuth(users)
       val api = Api(UsersRoutes(users, caller).routes, ProfilesRoutes(profiles, caller).routes)

@@ -369,9 +369,35 @@ Left unfixed on purpose. H3 forces those signatures open anyway when transaction
 untestable error-mapping code before then would be guessing. **Untested and reasoned, not verified** —
 no test in this repository produces a race.
 
-| | Before `tags` | After `tags` | After `users` |
-| --- | --- | --- | --- |
-| `sbt test` | 4 s | 5 s | 6 s |
+### `profiles` — specs neutral, nothing else moved
+
+All 16 requirements pass, first run, with `ProfilesFixture`'s construction the only edit. The dullest
+result so far, and the most reassuring one: no arrangement changed, no assertion changed, no hazard
+fired.
+
+The composite primary key `(follower, followed)` is the `Set` the in-memory version used. R2.2's
+repeated follow is a conflict the insert ignores; R3.2's unfollow of somebody unfollowed deletes no rows
+and says nothing about it. Confirmed against the running server — following twice leaves one row,
+unfollowing twice leaves none, and both return the profile the spec asks for.
+
+#### The schema has to obey BCE too
+
+`follows` holds two `uuid` columns referencing accounts, and the obvious thing is a foreign key to
+`users(id)`. **There is none, deliberately.** A reference from this table to that one is `profiles`
+reaching into `users`' storage, which the architecture forbids for exactly the reason it forbids the
+join in H5: `users` is reachable only through its boundary.
+
+This is the first point where the architecture costs something a database would normally give away free.
+Referential integrity between components is now a property the code maintains rather than one the schema
+enforces. It did not cost a requirement, and it did not cost a test — but it is worth saying plainly
+that BCE constrains the schema, not just the packages.
+
+| | Before | After `tags` | After `users` | After `profiles` |
+| --- | --- | --- | --- | --- |
+| `sbt test` | 4 s | 5 s | 6 s | 8 s |
+
+Three of five done, and the two remaining are the ones carrying the hazards: `articles` has H1, H3 and
+H5, and `comments` inherits H1's easy half.
 
 ## What must not be done
 

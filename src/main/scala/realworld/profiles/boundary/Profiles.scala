@@ -1,6 +1,6 @@
 package realworld.profiles.boundary
 
-import cats.effect.kernel.Sync
+import cats.effect.kernel.{Concurrent, Resource, Sync}
 import cats.mtl.Raise
 import cats.syntax.all.*
 
@@ -40,3 +40,7 @@ object Profiles:
   /** The whole component, assembled over in-memory storage (decision D3). */
   def inMemory[F[_]: Sync](accounts: Users[F]): F[Profiles[F]] =
     FollowRepository.inMemory[F].map(follows => apply(ProfileService(accounts, follows)))
+
+  /** The whole component, assembled over PostgreSQL (decision D11). */
+  def postgres[F[_]: Concurrent](accounts: Users[F], pool: Resource[F, skunk.Session[F]]): Profiles[F] =
+    apply(ProfileService(accounts, FollowRepository.postgres(pool)))
