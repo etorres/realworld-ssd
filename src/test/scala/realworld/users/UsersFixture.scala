@@ -12,6 +12,7 @@ import org.http4s.circe.CirceEntityCodec.given
 import org.http4s.{HttpApp, Method, Request, Response, Uri}
 
 import realworld.Rejections
+import realworld.support.TestDatabase
 import realworld.support.http.Api
 import realworld.users.boundary.*
 import realworld.users.control.*
@@ -44,7 +45,8 @@ object UsersFixture:
   ): IO[UsersFixture] =
     for
       secureRandom <- SecureRandom.javaSecuritySecureRandom[IO]
-      repository <- UserRepository.inMemory[IO]
+      pool <- TestDatabase.fresh(UserRepository.Tables)
+      repository = UserRepository.postgres[IO](pool)
     yield
       given UUIDGen[IO] = UUIDGen.fromSecureRandom(using cats.Functor[IO], secureRandom)
       val hasher = PasswordHasher.bcrypt[IO](BcryptLogRounds)

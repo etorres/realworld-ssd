@@ -5,7 +5,6 @@ import java.util.UUID
 import scala.concurrent.duration.DurationInt
 
 import cats.effect.IO
-import cats.effect.testkit.TestControl
 
 import realworld.RequirementSuite
 import realworld.users.control.TokenIssuer
@@ -32,18 +31,16 @@ class AuthenticateTokenSuite extends RequirementSuite[UsersFixture]:
     (
       "R5.2",
       "rejects a token that has expired",
-      // Arranges its own fixture: the row is about the passage of time, which TestControl supplies
-      // instantly. Storing the account directly keeps bcrypt out of the virtualised runtime.
+      // Arranges its own fixture, with a token issued already past its expiry. It used to travel two
+      // hours forward under TestControl instead, which a Postgres-backed repository cannot do: virtual
+      // time never completes a real socket read (decision D11, hazard H2).
       _ =>
-        TestControl.executeEmbed(
-          for
-            fixture <- UsersFixture(tokenTtl = 1.hour)
-            user <- fixture.stored("jake", "jake@jake.jake")
-            token <- fixture.tokens.issue(user.id)
-            _ <- IO.sleep(2.hours)
-            error <- rejected(fixture.users.authenticateToken(token))
-          yield assertEquals(error, UserError.invalidToken)
-        )
+        for
+          fixture <- UsersFixture(tokenTtl = -1.hour)
+          user <- fixture.stored("jake", "jake@jake.jake")
+          token <- fixture.tokens.issue(user.id)
+          error <- rejected(fixture.users.authenticateToken(token))
+        yield assertEquals(error, UserError.invalidToken)
     ),
     (
       "R5.3",

@@ -58,7 +58,11 @@ object TestDatabase:
     pool.use(session => Reset.traverse_(session.execute)) *>
       Database.migrate(pool, tables).as(pool)
 
+  /** Both guards matter. A test abandoned between the two statements -- by a cancellation, a timeout, or
+    * `TestControl` walking away from real I/O -- used to leave the database with no `public` schema at
+    * all, and every later test then failed on the drop rather than on its own subject.
+    */
   private val Reset: List[Command[Void]] = List(
-    sql"DROP SCHEMA public CASCADE".command,
-    sql"CREATE SCHEMA public".command
+    sql"DROP SCHEMA IF EXISTS public CASCADE".command,
+    sql"CREATE SCHEMA IF NOT EXISTS public".command
   )

@@ -2,7 +2,7 @@ package realworld.users.boundary
 
 import scala.concurrent.duration.FiniteDuration
 
-import cats.effect.kernel.Sync
+import cats.effect.kernel.{Async, Resource, Sync}
 import cats.effect.std.{SecureRandom, UUIDGen}
 import cats.mtl.Raise
 import cats.syntax.all.*
@@ -66,15 +66,32 @@ object Users:
 
   /** The whole component, assembled over in-memory storage (decision D3). */
   def inMemory[F[_]: Sync](jwtSecret: String, tokenTtl: FiniteDuration, bcryptLogRounds: Int): F[Users[F]] =
-    for
-      secureRandom <- SecureRandom.javaSecuritySecureRandom[F]
-      repository <- UserRepository.inMemory[F]
-    yield
-      given UUIDGen[F] = UUIDGen.fromSecureRandom(using Sync[F], secureRandom)
-      apply(
-        UserService(
-          repository,
-          PasswordHasher.bcrypt(bcryptLogRounds),
-          TokenIssuer.hs256(jwtSecret, tokenTtl)
+    UserRepository.inMemory[F].flatMap(over(_, jwtSecret, tokenTtl, bcryptLogRounds))
+
+  /** The whole component, assembled over PostgreSQL (decision D11). */
+  def postgres[F[_]: Async](
+      pool: Resource[F, skunk.Session[F]],
+      jwtSecret: String,
+      tokenTtl: FiniteDuration,
+      bcryptLogRounds: Int
+  ): F[Users[F]] =
+    over(UserRepository.postgres[F](pool), jwtSecret, tokenTtl, bcryptLogRounds)
+
+  /** Everything above the repository, which is the same either way. */
+  private def over[F[_]: Sync](
+      repository: UserRepository[F],
+      jwtSecret: String,
+      tokenTtl: FiniteDuration,
+      bcryptLogRounds: Int
+  ): F[Users[F]] =
+    SecureRandom
+      .javaSecuritySecureRandom[F]
+      .map: secureRandom =>
+        given UUIDGen[F] = UUIDGen.fromSecureRandom(using Sync[F], secureRandom)
+        apply(
+          UserService(
+            repository,
+            PasswordHasher.bcrypt(bcryptLogRounds),
+            TokenIssuer.hs256(jwtSecret, tokenTtl)
+          )
         )
-      )

@@ -5,7 +5,6 @@ import java.time.Instant
 import scala.concurrent.duration.DurationInt
 
 import cats.effect.IO
-import cats.effect.testkit.TestControl
 import cats.syntax.all.*
 import io.circe.Json
 import org.http4s.circe.CirceEntityCodec.given
@@ -39,15 +38,15 @@ class SystemInvariantSuite extends RequirementSuite[UsersFixture]:
           missing <- fixture.call(Method.GET, "/api/user")
           malformed <- fixture.call(Method.GET, "/api/user", token = Garbage.some)
           unsigned <- fixture.call(Method.GET, "/api/user", token = impostor.some)
-          expired <- TestControl.executeEmbed(
+          // A token issued already past its expiry, rather than one aged under TestControl: virtual
+          // time cannot drive a real socket, and `users` reaches PostgreSQL since D11 (hazard H2).
+          expired <-
             for
-              aged <- UsersFixture(tokenTtl = 1.hour)
+              aged <- UsersFixture(tokenTtl = -1.hour)
               owner <- aged.stored("jake", "jake@jake.jake")
               token <- aged.tokens.issue(owner.id)
-              _ <- IO.sleep(2.hours)
               response <- aged.call(Method.GET, "/api/user", token = token.some)
             yield response.status
-          )
           // An operation that merely accepts one: absent means anonymous, but unusable still rejects.
           open <- ProfilesFixture()
           _ <- open.register("celeb", "celeb@jake.jake")

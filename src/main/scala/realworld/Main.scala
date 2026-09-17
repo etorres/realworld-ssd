@@ -10,6 +10,7 @@ import realworld.support.config.AppConfig
 import realworld.support.http.Api
 import realworld.support.storage.Database
 import realworld.tags.control.TagRegistry
+import realworld.users.control.UserRepository
 import realworld.tags.boundary.{Tags, TagsRoutes}
 import realworld.articles.boundary.{Articles, ArticlesRoutes}
 import realworld.comments.boundary.{Comments, CommentsRoutes}
@@ -29,8 +30,10 @@ object Main extends IOApp.Simple:
       host <- parsed("REALWORLD_HOST", config.host)(Host.fromString).toResource
       port <- parsed("REALWORLD_PORT", config.port.toString)(Port.fromString).toResource
       pool <- Database.pool[IO](config.database)
-      _ <- Database.migrate(pool, TagRegistry.Tables).toResource
-      users <- Users.inMemory[IO](config.jwtSecret.value, config.tokenTtl, config.bcryptLogRounds).toResource
+      _ <- Database.migrate(pool, TagRegistry.Tables ++ UserRepository.Tables).toResource
+      users <- Users
+        .postgres[IO](pool, config.jwtSecret.value, config.tokenTtl, config.bcryptLogRounds)
+        .toResource
       profiles <- Profiles.inMemory[IO](users).toResource
       tags = Tags.postgres[IO](pool)
       articles <- Articles.inMemory[IO](users, profiles, tags).toResource

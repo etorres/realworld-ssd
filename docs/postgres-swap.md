@@ -318,6 +318,61 @@ Two things worth recording:
   miniature, and it is latent rather than fixed. Left as it is on purpose: inventing an `ORDER BY` now
   would remove the evidence before `articles` gets to produce the same finding at full scale.
 
+### `users` — specs neutral, two test arrangements changed
+
+All 32 requirements pass against PostgreSQL. No statement touched, no assertion touched — but **two rows
+had to be rearranged**, which is outcome three arriving exactly where H2 said it would.
+
+What H7 predicted wrong: the three tests that "write to storage directly" go through the
+`UserRepository` algebra, not through a `Ref`. Swapping the implementation under them changed nothing.
+R1.8 still reads the row back and proves the password was never stored in the clear — now against a real
+table, which is a stronger claim than it used to be.
+
+What H2 got right, and worse than predicted. `TokenIssuer.subjectOf` checks expiry against
+`Clock[F].realTime`, and its scaladoc says why: *"so that R5.2 is testable under TestControl instead of
+by waiting"*. Production code shaped by a test strategy — and the swap invalidated the strategy. Virtual
+time never completes a real socket read, so `TestControl` threw `NonTerminationException`.
+
+Both rows now issue a token that is **already past its expiry** (`tokenTtl = -1.hour`) instead of aging
+one two hours under virtual time. The assertion is unchanged in both; only the arrangement moved. The
+rewrite was mutation-tested before being trusted: deleting the expiry filter from `TokenIssuer` fails
+R5.2 and S1, and nothing else.
+
+That is the honest shape of this result. The specification was neutral. The coupling was never
+spec-to-implementation — it was **test-strategy-to-production-design**, and no gate in this repository
+was ever going to see it.
+
+#### A harness bug the swap exposed
+
+The first failure cascaded: one `TestControl` row failed, and then *every* later test failed with
+`Schema "public" does not exist`. `TestDatabase.fresh` reset the schema with `DROP SCHEMA public CASCADE`
+followed by `CREATE SCHEMA public`, and the abandoned program died between the two. Nothing recreated it.
+
+Both statements now carry `IF EXISTS` / `IF NOT EXISTS`. Worth recording because it had nothing to do
+with `TestControl` — a cancellation or a timeout would have done the same, and the symptom pointed at
+every test except the one that caused it.
+
+#### H11 — a unique violation has nowhere to go · not yet fixed
+
+`users` now has `UNIQUE` on both email and username. They are not what rejects a duplicate:
+`UserService.ensureAvailable` checks first, because R1.2 and R1.3 require the *field* to be named, and it
+names both at once when both clash. Verified end to end — duplicate email returns 409
+`{"errors":{"email":["has already been taken"]}}`, and a direct `INSERT` bypassing the service is refused
+by `users_username_key`.
+
+The gap is concurrency. Two simultaneous registrations for one email both pass the check, and the second
+hits the constraint — which surfaces as a `SkunkException`, not a `UserError`, so S2's envelope never
+gets a chance and the caller sees a 500 instead of a 409. Mapping `23505` back to the right field needs
+an error channel the repository algebra does not have: `save` returns `F[Unit]`.
+
+Left unfixed on purpose. H3 forces those signatures open anyway when transactions arrive, and writing
+untestable error-mapping code before then would be guessing. **Untested and reasoned, not verified** —
+no test in this repository produces a race.
+
+| | Before `tags` | After `tags` | After `users` |
+| --- | --- | --- | --- |
+| `sbt test` | 4 s | 5 s | 6 s |
+
 ## What must not be done
 
 Widening a statement to fit what the database made convenient. `AGENTS.md` already forbids it, and this
