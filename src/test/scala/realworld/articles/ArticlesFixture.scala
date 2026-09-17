@@ -12,12 +12,17 @@ import realworld.articles.control.ArticleView
 import realworld.articles.entity.ArticleError
 import cats.syntax.all.*
 
+import realworld.articles.control.{ArticleRepository, FavoriteRepository}
 import realworld.profiles.boundary.{Profiles, ProfilesRoutes}
+import realworld.profiles.control.FollowRepository
 import realworld.profiles.entity.ProfileError
+import realworld.support.TestDatabase
 import realworld.support.http.Api
 import realworld.tags.boundary.{Tags, TagsRoutes}
+import realworld.tags.control.TagRegistry
 import realworld.users.UsersFixture
 import realworld.users.boundary.{CallerAuth, RegisterUser, Users, UsersRoutes}
+import realworld.users.control.UserRepository
 import realworld.users.control.Session
 import realworld.users.entity.{AuthToken, UserError, UserId}
 
@@ -38,10 +43,19 @@ object ArticlesFixture:
 
   def apply(): IO[ArticlesFixture] =
     for
-      users <- Users.inMemory[IO](UsersFixture.JwtSecret, UsersFixture.TokenTtl, UsersFixture.BcryptLogRounds)
-      profiles <- Profiles.inMemory[IO](users)
-      tags <- Tags.inMemory[IO]
-      articles <- Articles.inMemory[IO](users, profiles, tags)
+      pool <- TestDatabase.fresh(
+        UserRepository.Tables ++ FollowRepository.Tables ++ TagRegistry.Tables ++
+          ArticleRepository.Tables ++ FavoriteRepository.Tables
+      )
+      users <- Users.postgres[IO](
+        pool,
+        UsersFixture.JwtSecret,
+        UsersFixture.TokenTtl,
+        UsersFixture.BcryptLogRounds
+      )
+      profiles = Profiles.postgres[IO](users, pool)
+      tags = Tags.postgres[IO](pool)
+      articles <- Articles.postgres[IO](pool, users, profiles, tags)
     yield
       val caller = CallerAuth(users)
       val api = Api(

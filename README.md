@@ -125,9 +125,9 @@ Configuration is read from the environment, all of it optional:
 
 ## Storage
 
-Mid-swap, by design. `tags`, `users` and `profiles` keep their state in PostgreSQL (decision D11);
-`articles` and `comments` are still `Ref`-backed (decision D3). So a restart forgets the articles and
-remembers the accounts and who follows whom.
+Mid-swap, by design. Every capability but `comments` keeps its state in PostgreSQL (decision D11);
+`comments` is still `Ref`-backed (decision D3), so a restart forgets the replies and keeps the articles
+they were attached to.
 
 ```bash
 docker compose up -d    # the database sbt run expects

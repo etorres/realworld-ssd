@@ -392,12 +392,74 @@ Referential integrity between components is now a property the code maintains ra
 enforces. It did not cost a requirement, and it did not cost a test — but it is worth saying plainly
 that BCE constrains the schema, not just the packages.
 
-| | Before | After `tags` | After `users` | After `profiles` |
-| --- | --- | --- | --- | --- |
-| `sbt test` | 4 s | 5 s | 6 s | 8 s |
+### `articles` — specs neutral, and H1 passed for the wrong reason
 
-Three of five done, and the two remaining are the ones carrying the hazards: `articles` has H1, H3 and
-H5, and `comments` inherits H1's easy half.
+All 48 requirements pass. No statement touched, no assertion touched. One arrangement changed — the
+third and last `TestControl` site (H2 again, R5.1).
+
+**H1 did not fire, and the reason is not the one this document predicted.**
+
+The naive query went in exactly as pre-registered: `ORDER BY created_at`, no tie-break.
+`ListArticlesSuite` R2.1 and `ReadFeedSuite` R3.1 both passed on the first run. Two probes, run before
+drawing any conclusion:
+
+*Probe A — ten back-to-back publishes, measured through the new storage:*
+
+```
+…20.514331Z  …20.580331Z  …20.608558Z  …20.631243Z  …20.647390Z
+…20.660943Z  …20.672909Z  …20.684394Z  …20.696243Z  …20.708443Z
+
+distinct milliseconds: 10 of 10        order correct: true
+```
+
+Against `Ref` the same ten publishes collided seven times on the millisecond. They are now **12 to 66 ms
+apart**, because each publish costs several round trips — the slug loop, the upsert, the tag
+registration, the author lookup, the favorites read. *The latency H8 counts as the cost of this swap is
+what made the ordering assertion pass.* Nothing about correctness improved.
+
+*Probe B — four articles sharing `created_at` exactly:*
+
+```
+three repeated reads:   alpha, bravo, charlie, delta   (stable)
+after rewriting one row: bravo, charlie, delta, alpha   (alpha moved to the end of the heap)
+```
+
+So where a tie genuinely exists, order is physical row position, and **an update reshuffles it**. R5.2
+rewrites a row every time a title changes.
+
+The honest conclusion: **H1 is latent, not fixed, and the swap made it slightly worse.** In-memory, ties
+broke by insertion order — unspecified but deterministic and stable. In PostgreSQL they break by heap
+position, which moves under updates. The tests cannot see either state.
+
+This is the strongest argument in the whole experiment for having pre-registered. Had the TSID been
+adopted up front, the suite would have gone green and the obvious reading would have been *"the
+specifications were neutral and the ordering carried over"*. The truth is that the ordering assertion
+is resting on the storage being slow.
+
+The three resolutions above are unchanged and the choice is still open. The case for **c** is stronger
+now than when it was written: **a** rewrites assertions to accept a tie-break nobody can predict, **b**
+adds a column whose only job is to keep a test green, and **c** gives the domain the ordering property
+it has been borrowing — first from `Vector`, now from the heap.
+
+#### H3 confirmed, and it is structural
+
+`ArticleService.delete` calls `favorites.removeAllOf(id)` then `articles.delete(id)`. Each repository
+takes its own session out of the pool, so the two statements cannot share a transaction without changing
+every repository signature. R6.1 says the article is removed *together with* its favorites; a failure
+between the two now leaves orphan rows in a real table rather than in a `Ref`. No test covers it, and
+none can without a fault injection this project does not have.
+
+#### H5 not yet paid
+
+`ArticleService.list` still reads `articles.all` and `favorites.all` in full and filters in memory, and
+`viewOf` re-reads every favorite for each article rendered. Correct, and absurd — a 20-article page
+issues one full-table read per row. Moving the filtering into SQL changes the repository algebra, not
+the spec, and the BCE limit from H5 stands: the username resolution and the follow set remain boundary
+calls into `users` and `profiles`.
+
+| | Before | After `tags` | After `users` | After `profiles` | After `articles` |
+| --- | --- | --- | --- | --- | --- |
+| `sbt test` | 4 s | 5 s | 6 s | 8 s | 9 s |
 
 ## What must not be done
 

@@ -9,6 +9,7 @@ import org.http4s.server.Server
 import realworld.support.config.AppConfig
 import realworld.support.http.Api
 import realworld.support.storage.Database
+import realworld.articles.control.{ArticleRepository, FavoriteRepository}
 import realworld.profiles.control.FollowRepository
 import realworld.tags.control.TagRegistry
 import realworld.users.control.UserRepository
@@ -32,14 +33,18 @@ object Main extends IOApp.Simple:
       port <- parsed("REALWORLD_PORT", config.port.toString)(Port.fromString).toResource
       pool <- Database.pool[IO](config.database)
       _ <- Database
-        .migrate(pool, TagRegistry.Tables ++ UserRepository.Tables ++ FollowRepository.Tables)
+        .migrate(
+          pool,
+          TagRegistry.Tables ++ UserRepository.Tables ++ FollowRepository.Tables ++
+            ArticleRepository.Tables ++ FavoriteRepository.Tables
+        )
         .toResource
       users <- Users
         .postgres[IO](pool, config.jwtSecret.value, config.tokenTtl, config.bcryptLogRounds)
         .toResource
       profiles = Profiles.postgres[IO](users, pool)
       tags = Tags.postgres[IO](pool)
-      articles <- Articles.inMemory[IO](users, profiles, tags).toResource
+      articles <- Articles.postgres[IO](pool, users, profiles, tags).toResource
       comments <- Comments.inMemory[IO](articles, profiles).toResource
       caller = CallerAuth(users)
       api = Api(

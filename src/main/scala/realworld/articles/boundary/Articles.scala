@@ -1,6 +1,6 @@
 package realworld.articles.boundary
 
-import cats.effect.kernel.Sync
+import cats.effect.kernel.{Async, Resource, Sync}
 import cats.effect.std.UUIDGen
 import cats.mtl.Raise
 import cats.syntax.all.*
@@ -81,7 +81,28 @@ object Articles:
     for
       articles <- ArticleRepository.inMemory[F]
       favorites <- FavoriteRepository.inMemory[F]
-      secureRandom <- cats.effect.std.SecureRandom.javaSecuritySecureRandom[F]
-    yield
-      given UUIDGen[F] = UUIDGen.fromSecureRandom(using Sync[F], secureRandom)
-      apply(ArticleService(articles, favorites, accounts, profiles, tags))
+      component <- over(articles, favorites, accounts, profiles, tags)
+    yield component
+
+  /** The whole component, assembled over PostgreSQL (decision D11). */
+  def postgres[F[_]: Async](
+      pool: Resource[F, skunk.Session[F]],
+      accounts: Users[F],
+      profiles: Profiles[F],
+      tags: Tags[F]
+  ): F[Articles[F]] =
+    over(ArticleRepository.postgres(pool), FavoriteRepository.postgres(pool), accounts, profiles, tags)
+
+  /** Everything above the repositories, which is the same either way. */
+  private def over[F[_]: Sync](
+      articles: ArticleRepository[F],
+      favorites: FavoriteRepository[F],
+      accounts: Users[F],
+      profiles: Profiles[F],
+      tags: Tags[F]
+  ): F[Articles[F]] =
+    cats.effect.std.SecureRandom
+      .javaSecuritySecureRandom[F]
+      .map: secureRandom =>
+        given UUIDGen[F] = UUIDGen.fromSecureRandom(using Sync[F], secureRandom)
+        apply(ArticleService(articles, favorites, accounts, profiles, tags))

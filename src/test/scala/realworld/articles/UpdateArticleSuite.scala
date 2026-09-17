@@ -1,10 +1,7 @@
 package realworld.articles
 
-import scala.concurrent.duration.DurationInt
-
 import cats.data.NonEmptyChain
 import cats.effect.IO
-import cats.effect.testkit.TestControl
 import cats.syntax.all.*
 import io.circe.Json
 import org.http4s.circe.CirceEntityCodec.given
@@ -41,28 +38,27 @@ class UpdateArticleSuite extends RequirementSuite[ArticlesFixture]:
     (
       "R5.1",
       "applies exactly the submitted fields, leaves the rest unchanged, and advances the update time",
-      // Arranges its own fixture: "advances" is only observable if time actually moves, and the clock has
-      // millisecond resolution, so TestControl supplies the gap instead of a real sleep.
+      // Arranges its own fixture, because "advances" is only observable across two clock reads. It used
+      // to jump a second forward under TestControl, on the belief that the clock had only millisecond
+      // resolution; it has microsecond resolution, and a round trip to the database is far wider than
+      // that. Virtual time cannot drive a real socket anyway (decision D11, hazard H2).
       _ =>
-        TestControl.executeEmbed(
-          for
-            fixture <- ArticlesFixture()
-            (jake, published) <- owned(fixture)
-            _ <- IO.sleep(1.second)
-            updated <- accepted(
-              fixture.articles.updateArticle(jake, "dragons", nothing.copy(body = "Updated body".some))
-            )
-          yield
-            assertEquals(updated.article.body, "Updated body")
-            assertEquals(updated.article.title, "Dragons", "an omitted field changed")
-            assertEquals(updated.article.description, "Ever wonder how?")
-            assertEquals(updated.article.tags, List("dragons", "training"))
-            assertEquals(updated.article.createdAt, published.article.createdAt)
-            assert(
-              updated.article.updatedAt.isAfter(published.article.updatedAt),
-              s"the update time did not advance: ${updated.article.updatedAt}"
-            )
-        )
+        for
+          fixture <- ArticlesFixture()
+          (jake, published) <- owned(fixture)
+          updated <- accepted(
+            fixture.articles.updateArticle(jake, "dragons", nothing.copy(body = "Updated body".some))
+          )
+        yield
+          assertEquals(updated.article.body, "Updated body")
+          assertEquals(updated.article.title, "Dragons", "an omitted field changed")
+          assertEquals(updated.article.description, "Ever wonder how?")
+          assertEquals(updated.article.tags, List("dragons", "training"))
+          assertEquals(updated.article.createdAt, published.article.createdAt)
+          assert(
+            updated.article.updatedAt.isAfter(published.article.updatedAt),
+            s"the update time did not advance: ${updated.article.updatedAt}"
+          )
     ),
     (
       "R5.2",
