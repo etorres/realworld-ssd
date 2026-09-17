@@ -92,15 +92,66 @@ have no monotonic column to break the tie — `ArticleId` is a random UUID.
 Affects articles R2.1, R2.6, R3.1, R3.2 and comments R2.1. Comments are the easy half: `CommentId` is a
 monotonic `Long`, so `ORDER BY created_at DESC, id DESC` reproduces insertion order exactly.
 
-Two ways out, neither of which touches a statement — the requirement says "most recently created first"
+Three ways out, none of which touches a statement — the requirement says "most recently created first"
 and is silent about ties:
 
-- add a monotonic insertion column (`bigserial`) and order by it, restoring today's behaviour exactly;
-- order by `(created_at DESC, id DESC)` and accept a tie-break the tests do not predict, which means
-  rewriting the assertions in `ListArticlesSuite` and `ReadFeedSuite`.
+- **a** — order by `(created_at DESC, id DESC)` and accept a tie-break the tests do not predict, which
+  means rewriting the assertions in `ListArticlesSuite` and `ReadFeedSuite`. This is outcome three.
+- **b** — add a monotonic insertion column (`bigserial`) and order by it, restoring today's behaviour
+  exactly. Choosing this *because* it keeps the tests green would be fitting the storage to the tests,
+  and should be recorded as such.
+- **c** — make `ArticleId` itself time-sortable. See below.
 
-The second is outcome three. Choosing the first because it keeps the tests green would be fitting the
-storage to the tests, and should be recorded as such if it is what happens.
+#### Candidate: a time-sorted `ArticleId` (TSID)
+
+Not a decision. Recorded here so the option is on the table before the swap starts rather than invented
+to explain the result afterwards.
+
+`io.hypersistence:hypersistence-tsid` `2.1.4` — 64-bit, `[42-bit time][node][counter]`, zero runtime
+dependencies, Java 8. Measured on a JVM probe against that version:
+
+| Claim | Result |
+| --- | --- |
+| ten TSIDs from one factory, strictly increasing | **true** — and all ten landed in *one* millisecond |
+| magnitude | `888309615823949876` (~8.9 × 10¹⁷) |
+| exceeds JavaScript's `Number.MAX_SAFE_INTEGER` | **true**, by ~100× |
+| cross-node, same millisecond: later id sorts higher | **false** |
+
+The first row is the case that breaks ordering today, and it survives it. `TSID.Factory.getTime()`
+increments a counter instead of re-reading the clock while `clock.millis() <= lastTime`, so one factory
+is monotonic by construction rather than by luck.
+
+Why this is better than **b**: **b** fixes ordering in Postgres and leaves `ArticleRepository.inMemory`
+ordering by a different mechanism — two implementations agreeing by coincidence. A time-sorted id puts
+the property in the *entity*, so both implementations order by the same field and `all` no longer has to
+promise insertion order in its scaladoc. Storage-independent, which is what this experiment is about.
+
+Spec-clean: no articles statement mentions an identifier — articles are addressed by slug — and
+`ArticleId` is never serialized, since `ArticlesJson` emits no id field at all.
+
+Three conditions if it is adopted:
+
+1. **`created_at` stays the primary sort key; the id is the tie-break.** Two clocks are in play — the
+   injected `Clock[F]` for `createdAt`, the library's own `java.time.Clock` for the id. Under
+   `TestControl` (H2) virtual time puts `createdAt` in 1970 while the id's timestamp says 2026.
+   `ORDER BY created_at DESC, id DESC` is unaffected; `ORDER BY id DESC` alone would be wrong. The
+   builder does take `withClock`, but that interface is synchronous and cats-effect's virtual time
+   cannot be exposed through it — do not try to unify them.
+2. **Sub-millisecond order across servers is by node id, not creation time.** The node bits sit above the
+   counter bits, so in the probe an id generated first on node 2 sorted below one generated second on
+   node 1. R2.1 is satisfied either way, being silent on ties, but "sortable by time" holds only to
+   millisecond resolution and should not be overclaimed.
+3. **Do not extend it to `CommentId`.** Tempting, because `CommentRepository.nextId` is a centralised
+   counter that genuinely does not survive multiple servers. But `CommentsJson` serializes `id` as a JSON
+   number, and comments R1.2 exists precisely because "the identifier is addressed in a request path and
+   read back as a number". At 8.9 × 10¹⁷ a JavaScript client silently loses precision — and the Hurl
+   suite would *not* catch it, since Hurl handles `i64` fine. A 2⁵³ budget leaves 11 bits below the
+   timestamp, which the library's fixed 22-bit random field cannot express.
+
+**Sequencing matters more than the choice.** Adopting **c** before the swap means H1 never fires and the
+finding disappears. Swap first with the naive `ORDER BY created_at DESC`, watch `ListArticlesSuite` R2.1
+fail, and only then fix it. Otherwise the result is unreportable: a hazard silently removed before the
+experiment that was supposed to expose it.
 
 ### H2 — `TestControl` cannot run over real I/O · PROVEN by inspection
 
@@ -190,6 +241,7 @@ rendering where it is.
 | --- | --- | --- |
 | `org.tpolecat::skunk-core` | `0.6.4` stable, or `1.0.0-M10` | both on cats-effect 3.5.x; 3.7.1 evicts upward |
 | `com.dimafeng::testcontainers-scala-postgresql` | `0.43.0` | for a real database in `sbt test` |
+| `io.hypersistence:hypersistence-tsid` | `2.1.4` | **candidate only**, see H1 · no runtime dependencies |
 
 Skunk over Doobie for the reason D2 already gives: it stays in the Typelevel effect system rather than
 wrapping JDBC's blocking model, and its codecs are explicit rather than derived.
@@ -205,7 +257,9 @@ wrapping JDBC's blocking model, and its codecs are explicit rather than derived.
 4. **One capability end to end** — `tags`, because it is five requirements and calls nothing. If the
    loop works there, it works.
 5. **`users`**, which forces H4 and H7.
-6. **`profiles`**, then **`articles`** (H1, H3, H5), then **`comments`**.
+6. **`profiles`**, then **`articles`** (H1, H3, H5), then **`comments`**. Order articles the naive way
+   first — `ORDER BY created_at DESC`, no tie-break — and record whether R2.1 fails before fixing it.
+   Fixing H1 pre-emptively destroys the only measurement the hazard offers.
 7. **Re-verify**: `scripts/spec-baseline.sh`, then `sbt test` for 118/118, then
    `scripts/api-conformance.sh` against a server on a real database.
 8. **Write down which of the three outcomes happened**, including any test whose assertions changed and
