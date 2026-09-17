@@ -11,13 +11,19 @@ import realworld.Rejections
 import realworld.articles.boundary.{Articles, ArticlesRoutes, PublishArticle}
 import realworld.articles.control.ArticleView
 import realworld.articles.entity.ArticleError
+import realworld.articles.control.{ArticleRepository, FavoriteRepository}
 import realworld.comments.boundary.{Comments, CommentsRoutes}
+import realworld.comments.control.CommentRepository
 import realworld.comments.entity.CommentError
 import realworld.profiles.boundary.{Profiles, ProfilesRoutes}
+import realworld.profiles.control.FollowRepository
+import realworld.support.TestDatabase
 import realworld.support.http.Api
 import realworld.tags.boundary.{Tags, TagsRoutes}
+import realworld.tags.control.TagRegistry
 import realworld.users.UsersFixture
 import realworld.users.boundary.{CallerAuth, RegisterUser, Users, UsersRoutes}
+import realworld.users.control.UserRepository
 import realworld.users.control.Session
 import realworld.users.entity.{AuthToken, UserError, UserId}
 
@@ -38,11 +44,20 @@ object CommentsFixture:
 
   def apply(): IO[CommentsFixture] =
     for
-      users <- Users.inMemory[IO](UsersFixture.JwtSecret, UsersFixture.TokenTtl, UsersFixture.BcryptLogRounds)
-      profiles <- Profiles.inMemory[IO](users)
-      tags <- Tags.inMemory[IO]
-      articles <- Articles.inMemory[IO](users, profiles, tags)
-      comments <- Comments.inMemory[IO](articles, profiles)
+      pool <- TestDatabase.fresh(
+        UserRepository.Tables ++ FollowRepository.Tables ++ TagRegistry.Tables ++
+          ArticleRepository.Tables ++ FavoriteRepository.Tables ++ CommentRepository.Tables
+      )
+      users <- Users.postgres[IO](
+        pool,
+        UsersFixture.JwtSecret,
+        UsersFixture.TokenTtl,
+        UsersFixture.BcryptLogRounds
+      )
+      profiles = Profiles.postgres[IO](users, pool)
+      tags = Tags.postgres[IO](pool)
+      articles <- Articles.postgres[IO](pool, users, profiles, tags)
+      comments = Comments.postgres[IO](pool, articles, profiles)
     yield
       val caller = CallerAuth(users)
       val api = Api(

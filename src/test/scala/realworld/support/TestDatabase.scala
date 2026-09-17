@@ -53,6 +53,20 @@ object TestDatabase:
       .unsafeRunSync()
       ._1
 
+  /** Collapses every row's `created_at` onto one instant.
+    *
+    * Ordering by a timestamp says nothing about rows that share one, and how a tie actually resolves is
+    * invisible while the clock keeps separating them. This makes the tie happen on purpose.
+    */
+  def flatten(table: String): IO[Unit] =
+    pool.use(_.execute(sql"UPDATE #$table SET created_at = '2026-01-01T00:00:00Z'".command)).void
+
+  /** Reclaims the space deleted rows left, so a later insert may take a slot in the middle of the heap
+    * — which is how an unordered `SELECT` starts returning rows in a different order than it did.
+    */
+  def vacuum(table: String): IO[Unit] =
+    pool.use(_.execute(sql"VACUUM #$table".command)).void
+
   /** A pool over an empty schema holding exactly the tables asked for. */
   def fresh(tables: List[Command[Void]]): IO[Resource[IO, Session[IO]]] =
     pool.use(session => Reset.traverse_(session.execute)) *>

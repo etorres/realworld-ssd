@@ -457,9 +457,71 @@ issues one full-table read per row. Moving the filtering into SQL changes the re
 the spec, and the BCE limit from H5 stands: the username resolution and the follow set remain boundary
 calls into `users` and `profiles`.
 
-| | Before | After `tags` | After `users` | After `profiles` | After `articles` |
-| --- | --- | --- | --- | --- | --- |
-| `sbt test` | 4 s | 5 s | 6 s | 8 s | 9 s |
+### `comments` — specs neutral, and the one tie-break that could be fixed honestly
+
+All 14 requirements pass. No statement touched, no assertion touched, no arrangement changed.
+
+The naive `ORDER BY created_at` went in first, as everywhere else, and passed for the same latency
+reason as `articles`. But comments are the one place the tie can be closed properly, so the hazard was
+made to happen on purpose rather than waited for. With every `created_at` collapsed onto one instant:
+
+```
+four comments posted          → four, three, two, one     (newest first, correct)
+delete one, VACUUM, post one  → four, three, one, five    (the newest comment arrives LAST)
+```
+
+R2.1 is *violated*, not merely unspecified: the vacuum reclaimed the deleted row's slot and the new
+comment took a place in the middle of the heap.
+
+The query now reads `ORDER BY created_at, id`, and the probe holds. **This is not the `bigserial` of
+option b.** R1.2 already requires the identifier to be a whole number this BC hands out in sequence, so
+the column *is* the creation order — ordering by it states a property the domain already has, rather
+than adding one to keep a test green. `articles` has no such column, which is exactly why H1 stays open
+there and why a time-sorted `ArticleId` is the corresponding move.
+
+## Where the experiment landed
+
+All five capabilities are on PostgreSQL. **118 requirement statements, not one touched.** The official
+Hurl suite passes 13/13 files over 154 requests against a real database — the same result it gave
+in-memory.
+
+| | Before | `tags` | `users` | `profiles` | `articles` | `comments` |
+| --- | --- | --- | --- | --- | --- | --- |
+| `sbt test` | 4 s | 5 s | 6 s | 8 s | 9 s | 10 s |
+
+**Outcome one for the specifications; outcome three for three tests.** The statements described
+behaviour. What did not survive was a test *strategy*: three rows drove `TestControl`, and virtual time
+cannot complete a socket read. All three now arrange the same condition without it — a token issued
+already expired, or simply two clock reads either side of a round trip — and each rewrite was
+mutation-tested before being trusted.
+
+The finding that matters most is not in the totals. `TokenIssuer.subjectOf` checked expiry against
+`Clock[F]` *so that a test could use virtual time*, and said so in its own scaladoc. `ArticleService`
+leaned on `sortBy` being stable over a `Vector`. Neither is a specification describing an
+implementation, which is what this experiment was built to detect. Both are the reverse: an
+implementation shaped by how it was going to be tested. **No gate in this repository can see that**, and
+118/118 traced says nothing about it.
+
+Second finding, from the deletion behaviour the conformance run left behind:
+
+```
+users 16 · tags 3 · comments 2 · articles 0 · favorites 0 · follows 0
+```
+
+Two comments with no article. That is not a bug — the `comments` spec puts it in `## Out of scope`
+explicitly, because `articles` does not call `comments` and so cannot tell them to go. In-memory this was
+a sentence in a scaladoc. In a database it is two rows that will still be there tomorrow.
+
+### Still open
+
+- **H1** on `articles` — latent, and the swap made it worse. A time-sorted `ArticleId` is the agreed
+  next change.
+- **H3** — `delete` spans two sessions, so R6.1's "together with" is not honoured under failure.
+- **H5** — whole-table reads on every listing.
+- **H11** — a unique violation surfaces as a 500 rather than a 409.
+- **Regression coverage for the orderings.** The `comments` tie-break is guarded by nothing: removing
+  `, id` breaks no test. The probe that found it was deliberately thrown away, and the same gap will
+  exist for `articles` once its ordering is fixed. Both deserve a row tracing R2.1.
 
 ## What must not be done
 

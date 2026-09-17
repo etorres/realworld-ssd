@@ -62,6 +62,10 @@ The background reading that started this — an analysis of Nicolas Duminil's fo
 specifications, and how its Java-shaped ideas carry over to Scala — is in
 [`docs/sdd-background.md`](docs/sdd-background.md).
 
+The specifications have since survived a full storage swap, in-memory to PostgreSQL, without a single
+statement changing. What did not survive is written up honestly in
+[`docs/postgres-swap.md`](docs/postgres-swap.md).
+
 ## Status
 
 All five capabilities are applied end to end over http4s with in-memory storage: accounts and tokens,
@@ -125,9 +129,10 @@ Configuration is read from the environment, all of it optional:
 
 ## Storage
 
-Mid-swap, by design. Every capability but `comments` keeps its state in PostgreSQL (decision D11);
-`comments` is still `Ref`-backed (decision D3), so a restart forgets the replies and keeps the articles
-they were attached to.
+PostgreSQL, through Skunk (decision D11). Every capability, and nothing is forgotten on restart. The
+`Ref`-backed implementations from decision D3 are still there beside the new ones — the swap was an
+experiment in whether the specifications were implementation-neutral, and keeping both is what makes it
+a comparison.
 
 ```bash
 docker compose up -d    # the database sbt run expects
@@ -142,15 +147,18 @@ Tests no longer run suites in parallel. A database-backed fixture resets a share
 doing that at once would see each other's tables disappear. The cost is tracked in
 [`docs/postgres-swap.md`](docs/postgres-swap.md).
 
-## What's next
+## The storage swap
 
-Decision D3 chose in-memory storage so it could be swapped later. The second experiment tests whether
-the specifications were describing behaviour or describing the implementation: a correct swap to
-Postgres should touch zero requirement statements and leave all 118 traces intact.
+Decision D3 chose in-memory storage so it could be swapped later. The second experiment asked whether
+the specifications were describing behaviour or describing the implementation.
 
-[`docs/postgres-swap.md`](docs/postgres-swap.md) is the pre-registration — the swap surface, the
-hazards found by reading the code, and the three outcomes fixed in advance so the result cannot be
-decided after the fact.
+**All five capabilities now run on PostgreSQL, and not one of the 118 requirement statements changed.**
+Three tests did: they drove `TestControl`, and virtual time cannot complete a socket read.
+
+[`docs/postgres-swap.md`](docs/postgres-swap.md) was written before the swap started — the surface, the
+hazards, and the three possible outcomes fixed in advance so the result could not be decided afterwards
+by whoever wrote it up. The results are appended to it, including the hazard that passed for the wrong
+reason.
 
 ```bash
 scripts/spec-baseline.sh    # 118 requirement statements, unchanged since the baseline

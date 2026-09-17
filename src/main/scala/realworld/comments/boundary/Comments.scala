@@ -1,6 +1,6 @@
 package realworld.comments.boundary
 
-import cats.effect.kernel.Sync
+import cats.effect.kernel.{Concurrent, Resource, Sync}
 import cats.mtl.Raise
 import cats.syntax.all.*
 
@@ -39,3 +39,11 @@ object Comments:
   /** The whole component, assembled over in-memory storage (decision D3). */
   def inMemory[F[_]: Sync](articles: Articles[F], profiles: Profiles[F]): F[Comments[F]] =
     CommentRepository.inMemory[F].map(comments => apply(CommentService(comments, articles, profiles)))
+
+  /** The whole component, assembled over PostgreSQL (decision D11). */
+  def postgres[F[_]: Concurrent: cats.effect.kernel.Clock](
+      pool: Resource[F, skunk.Session[F]],
+      articles: Articles[F],
+      profiles: Profiles[F]
+  ): Comments[F] =
+    apply(CommentService(CommentRepository.postgres(pool), articles, profiles))

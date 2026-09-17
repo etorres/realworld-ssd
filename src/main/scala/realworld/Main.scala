@@ -10,6 +10,7 @@ import realworld.support.config.AppConfig
 import realworld.support.http.Api
 import realworld.support.storage.Database
 import realworld.articles.control.{ArticleRepository, FavoriteRepository}
+import realworld.comments.control.CommentRepository
 import realworld.profiles.control.FollowRepository
 import realworld.tags.control.TagRegistry
 import realworld.users.control.UserRepository
@@ -36,7 +37,7 @@ object Main extends IOApp.Simple:
         .migrate(
           pool,
           TagRegistry.Tables ++ UserRepository.Tables ++ FollowRepository.Tables ++
-            ArticleRepository.Tables ++ FavoriteRepository.Tables
+            ArticleRepository.Tables ++ FavoriteRepository.Tables ++ CommentRepository.Tables
         )
         .toResource
       users <- Users
@@ -45,7 +46,7 @@ object Main extends IOApp.Simple:
       profiles = Profiles.postgres[IO](users, pool)
       tags = Tags.postgres[IO](pool)
       articles <- Articles.postgres[IO](pool, users, profiles, tags).toResource
-      comments <- Comments.inMemory[IO](articles, profiles).toResource
+      comments = Comments.postgres[IO](pool, articles, profiles)
       caller = CallerAuth(users)
       api = Api(
         UsersRoutes(users, caller).routes,
