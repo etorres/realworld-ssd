@@ -78,6 +78,14 @@
   *   fields `users` owns, and no BC may read another's storage; rejected: `users` publishing account
   *   events for `profiles` to replicate, which buys eventual consistency for nothing while storage is
   *   in-memory; folding `profiles` back into `users` as one account capability)_
+  * - D11 — Storage is PostgreSQL through Skunk, superseding D3's choice of in-memory repositories. The
+  *   `Ref`-backed implementations are kept beside the new ones rather than deleted. _(why: D3 chose
+  *   in-memory storage explicitly so it could be swapped once the contract stopped moving, and the swap
+  *   is the test of whether these specifications describe behaviour or describe an implementation —
+  *   keeping both implementations is what makes that a comparison rather than a rewrite; Skunk over
+  *   Doobie because it stays in the effect system rather than wrapping JDBC's blocking model, and its
+  *   codecs are written rather than derived; rejected: Doobie over JDBC, deleting the in-memory
+  *   repositories, keeping D3 and treating durability as out of scope)_
   *
   * ## Stack
   * - Scala 3 + Typelevel (cats-effect · http4s · circe · cats-mtl) on sbt · base package `realworld`

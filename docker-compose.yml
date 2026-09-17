@@ -1,0 +1,19 @@
+# The database `sbt run` expects, since decision D11. Tests do not use it -- they start their own
+# container through Testcontainers.
+#
+#   docker compose up -d
+#   sbt run
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: realworld
+      POSTGRES_PASSWORD: realworld
+      POSTGRES_DB: realworld
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U realworld"]
+      interval: 2s
+      timeout: 3s
+      retries: 15

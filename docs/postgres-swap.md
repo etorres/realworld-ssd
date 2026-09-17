@@ -235,6 +235,19 @@ boundary. `timestamptz` is microsecond-precision and round-trips an `Instant` fa
 declared `timestamp(3)` would silently change stored values. Declare full precision and leave S3's
 rendering where it is.
 
+### H10 — nothing verifies `support.config` · FOUND DURING THE SWAP
+
+Adding the database settings to `AppConfig` introduced a `val` that referenced another `val` declared
+below it. Scala initialises object fields in source order, so `database` was still `null` when `load`
+captured it, and `sbt run` died with a `NullPointerException` from inside Ciris.
+
+`sbt test` stayed green throughout. `realworld.support.config` is a declared non-spec package, so no
+requirement traces it and no test loads it — the drift gate is silent there by construction, and the
+first thing to notice was a server that would not boot.
+
+Not a spec problem, and not an argument for specifying configuration. It is a reminder that the 118
+traces cover the capabilities and nothing else, which is easy to forget when the report says 118/118.
+
 ## Dependencies (resolvable, checked)
 
 | | Version | Notes |
@@ -264,6 +277,46 @@ wrapping JDBC's blocking model, and its codecs are explicit rather than derived.
    `scripts/api-conformance.sh` against a server on a real database.
 8. **Write down which of the three outcomes happened**, including any test whose assertions changed and
    why — H1 makes that the likely story.
+
+## Results
+
+### `tags` — specs neutral
+
+Both suites pass against a real PostgreSQL, and **the only thing that changed in the test tree was how
+`TagsFixture` builds the component**. Not one row of `RegisterTagsSuite` or `ListTagsSuite` was touched.
+
+```
+tags 5/5 traced · 120 tests green · 118 statements unchanged since the baseline
+```
+
+Verified end to end as well: `POST /api/articles` with a tag list, then `GET /api/tags`, then the rows
+read straight out of `psql`, then a genuine process restart — tags survived, articles did not, which is
+exactly the half-swapped state.
+
+What it cost:
+
+| | Before | After |
+| --- | --- | --- |
+| `sbt test` | 4 s | 5 s |
+| suite parallelism | on | **off** — `Test / parallelExecution := false` |
+| `sbt run` | nothing | needs `docker compose up -d` |
+
+The parallelism is the real price, and it is H8 arriving on schedule. A `Ref`-backed fixture was empty
+because it allocated its own `Ref`; a database-backed one has to be *made* empty, and dropping and
+rebuilding a shared schema cannot happen in two suites at once. One second on five tests says little —
+the number to watch is the same measurement after `articles`.
+
+Two things worth recording:
+
+- **`TagRegistry.postgres` needs no read before its write.** The in-memory version kept a `Vector` and
+  called `.distinct`; the table has `name text PRIMARY KEY` and the insert says `ON CONFLICT DO NOTHING`.
+  R1.2 is carried by a constraint instead of by a fold, and `TagService` is byte-for-byte the same object
+  above either one. That is the cleanest evidence so far that the statement described behaviour.
+- **R1.2's test is order-sensitive even though R1.2 is not.** It asserts `after == before` on two
+  `List[String]` reads. The query is the naive `SELECT name FROM tags` with no `ORDER BY`, so it passes
+  on physical row order rather than on any guarantee — nothing moved between the two reads. This is H1 in
+  miniature, and it is latent rather than fixed. Left as it is on purpose: inventing an `ORDER BY` now
+  would remove the evidence before `articles` gets to produce the same finding at full scale.
 
 ## What must not be done
 

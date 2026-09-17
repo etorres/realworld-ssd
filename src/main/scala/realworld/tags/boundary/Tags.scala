@@ -1,7 +1,8 @@
 package realworld.tags.boundary
 
-import cats.effect.kernel.Sync
+import cats.effect.kernel.{Concurrent, Resource, Sync}
 import cats.syntax.all.*
+import skunk.Session
 
 import realworld.tags.control.{TagRegistry, TagService}
 import realworld.tags.entity.Tag
@@ -27,3 +28,9 @@ object Tags:
   /** The whole component, assembled over in-memory storage (decision D3). */
   def inMemory[F[_]: Sync]: F[Tags[F]] =
     TagRegistry.inMemory[F].map(registry => apply(TagService(registry)))
+
+  /** The whole component, assembled over PostgreSQL (decision D11). Nothing above the registry changes:
+    * `TagService` is the same object either way, which is the point of the comparison.
+    */
+  def postgres[F[_]: Concurrent](pool: Resource[F, Session[F]]): Tags[F] =
+    apply(TagService(TagRegistry.postgres(pool)))

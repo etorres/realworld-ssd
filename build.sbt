@@ -13,6 +13,9 @@ val log4catsV   = "2.8.0"
 val logbackV    = "1.5.18"
 val jbcryptV    = "0.4"
 val munitCeV    = "2.2.0"
+val skunkV      = "0.6.4"
+val tcV         = "0.43.0"
+val tcJavaV     = "1.21.3"
 
 lazy val root = project
   .in(file("."))
@@ -29,6 +32,10 @@ lazy val root = project
       // package clause -- see AGENTS.md, decision D1. That is deliberate, not an omission.
       "-Wconf:msg=is defined in the compilation unit:s"
     ),
+    // A database-backed fixture resets a shared schema, so two suites doing it at once would see each
+    // other's tables disappear. The cost of that serialisation is a finding of the storage swap, not a
+    // workaround for it -- see docs/postgres-swap.md, H8.
+    Test / parallelExecution := false,
     libraryDependencies ++= Seq(
       "org.typelevel"        %% "cats-effect"                % catsEffectV,
       "org.typelevel"        %% "cats-mtl"                   % catsMtlV,
@@ -43,7 +50,13 @@ lazy val root = project
       "org.typelevel"        %% "log4cats-slf4j"             % log4catsV,
       "ch.qos.logback"        % "logback-classic"            % logbackV % Runtime,
       "org.mindrot"           % "jbcrypt"                    % jbcryptV,
+      "org.tpolecat"         %% "skunk-core"                 % skunkV,
       "org.typelevel"        %% "munit-cats-effect"          % munitCeV % Test,
-      "org.typelevel"        %% "cats-effect-testkit"        % catsEffectV % Test
+      "org.typelevel"        %% "cats-effect-testkit"        % catsEffectV % Test,
+      "com.dimafeng"         %% "testcontainers-scala-postgresql" % tcV % Test,
+      // testcontainers-scala 0.43.0 pins testcontainers-java 1.20.2, which negotiates Docker API
+      // 1.32 and is refused by engines requiring 1.40 or newer.
+      "org.testcontainers"    % "testcontainers"                  % tcJavaV % Test,
+      "org.testcontainers"    % "postgresql"                      % tcJavaV % Test
     )
   )

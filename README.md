@@ -123,7 +123,23 @@ Configuration is read from the environment, all of it optional:
 | `REALWORLD_TOKEN_TTL_MINUTES` | `1440` |
 | `REALWORLD_BCRYPT_LOG_ROUNDS` | `10` |
 
-Storage is in-memory, so everything is forgotten on restart. That is decision D3, not an oversight.
+## Storage
+
+Mid-swap, by design. `tags` keeps its registry in PostgreSQL (decision D11); the other four capabilities
+are still `Ref`-backed (decision D3). So a restart forgets the articles and remembers the tags.
+
+```bash
+docker compose up -d    # the database sbt run expects
+sbt run
+```
+
+`sbt test` does not use that database — it starts its own through Testcontainers, which needs only a
+running Docker engine. If discovery fails with *client version 1.32 is too old*, that is Testcontainers'
+default API version rather than anything local; `TestDatabase` pins a newer one.
+
+Tests no longer run suites in parallel. A database-backed fixture resets a shared schema, and two suites
+doing that at once would see each other's tables disappear. The cost is tracked in
+[`docs/postgres-swap.md`](docs/postgres-swap.md).
 
 ## What's next
 
