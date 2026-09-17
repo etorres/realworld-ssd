@@ -514,14 +514,52 @@ a sentence in a scaladoc. In a database it is two rows that will still be there 
 
 ### Still open
 
-- **H1** on `articles` — latent, and the swap made it worse. A time-sorted `ArticleId` is the agreed
-  next change.
+- ~~**H1** on `articles`~~ — **closed.** `ArticleId` is a TSID (decision D12), the query orders by
+  `created_at, id`, and `ArticleService` sorts by the same pair instead of truncating to the
+  millisecond. See below.
 - **H3** — `delete` spans two sessions, so R6.1's "together with" is not honoured under failure.
 - **H5** — whole-table reads on every listing.
 - **H11** — a unique violation surfaces as a 500 rather than a 409.
-- **Regression coverage for the orderings.** The `comments` tie-break is guarded by nothing: removing
-  `, id` breaks no test. The probe that found it was deliberately thrown away, and the same gap will
-  exist for `articles` once its ordering is fixed. Both deserve a row tracing R2.1.
+- ~~**Regression coverage for the orderings**~~ — **closed.** Both suites gained a row tracing R2.1
+  that forces the tie and then disturbs the storage: `articles` rewrites a row, `comments` deletes one
+  and vacuums so the next insert takes its slot. Mutation-tested — removing either tie-break fails
+  exactly those two rows.
+
+## Closing H1 — a time-sorted `ArticleId`
+
+Option **c**, taken after the swap rather than before it, so the hazard could be measured first.
+
+`ArticleId` went from `opaque type = UUID` to `opaque type = Long` holding a TSID, minted by
+`ArticleIds`, an algebra in `control` wrapping one `TSID.Factory` per node. The factory is stateful by
+design — inside one millisecond it increments a counter instead of re-reading the clock, which is what
+makes consecutive identifiers ordered — so it is constructed once per component and every call to it is
+suspended in `Sync`. The node comes from `REALWORLD_NODE_ID`.
+
+Three places stopped guessing:
+
+| | Before | After |
+| --- | --- | --- |
+| `ArticleRepository.all` | `ORDER BY created_at` | `ORDER BY created_at, id` |
+| `CommentRepository.forArticle` | `ORDER BY created_at` | `ORDER BY created_at, id` |
+| `ArticleService.paged` | `sortBy(_.createdAt.toEpochMilli).reverse` | `sorted` by `(createdAt, id)` descending |
+
+The service change matters as much as the SQL. The old sort truncated to the millisecond and then
+depended on `sortBy` being stable over whatever order the repository returned — the exact borrowed
+property this whole hazard was about. It now names both keys, and **both implementations order by the
+same fields**: the `Ref`-backed one yields insertion order, which for TSIDs *is* identifier order, so
+in-memory and PostgreSQL agree by construction rather than by coincidence.
+
+`createdAt` stays the primary key of the sort. The identifier carries its own clock reading, taken from
+the TSID factory rather than from `Clock[F]`, and R2.1 is about when an article was created.
+
+**The schema changed incompatibly.** `articles.id`, `favorites.article` and `comments.article` are
+`bigint` where they were `uuid`. There is no migration framework here — `Database.migrate` only issues
+`CREATE TABLE IF NOT EXISTS` — so an existing database has to be dropped and rebuilt
+(`docker compose down -v`). Fine for a project whose storage was in-memory a day ago, and worth naming
+rather than discovering.
+
+Verified: 122 tests green, 118 statements unchanged, Hurl 13/13 over 154 requests, and the comment rows
+now reference article `888370193590393314`.
 
 ## What must not be done
 

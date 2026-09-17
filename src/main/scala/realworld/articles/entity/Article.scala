@@ -1,7 +1,6 @@
 package realworld.articles.entity
 
 import java.time.Instant
-import java.util.UUID
 
 import realworld.users.entity.UserId
 
@@ -20,12 +19,24 @@ final case class Article(
     updatedAt: Instant
 )
 
-opaque type ArticleId = UUID
+/** A time-sorted identifier (a TSID): 42 bits of millisecond, then a node, then a counter.
+  *
+  * It replaced a random UUID so that the identifier carries the order the articles were created in.
+  * `articles` had been borrowing that order — first from the insertion order of a `Vector`, then from
+  * PostgreSQL's heap, which moves when a row is rewritten. Neither is a promise, and R2.1 needs one when
+  * two articles share a creation instant. It is never serialised: an article is addressed by its slug.
+  */
+opaque type ArticleId = Long
 
 object ArticleId:
-  def apply(value: UUID): ArticleId = value
+  def apply(value: Long): ArticleId = value
 
-  extension (id: ArticleId) def value: UUID = id
+  extension (id: ArticleId) def value: Long = id
+
+  /** Newest last. Only a tie-break: the identifier's own clock is not `Clock[F]`, so `createdAt` stays
+    * the field that decides when an article was created.
+    */
+  given Ordering[ArticleId] = Ordering.by(_.value)
 
 /** The URL-safe, unique identifier of an article. */
 opaque type Slug = String

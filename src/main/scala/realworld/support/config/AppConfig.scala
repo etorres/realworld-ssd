@@ -13,6 +13,7 @@ final case class AppConfig(
     jwtSecret: Secret[String],
     tokenTtl: FiniteDuration,
     bcryptLogRounds: Int,
+    nodeId: Int,
     database: Database.Settings
 )
 
@@ -36,5 +37,8 @@ object AppConfig:
       env("REALWORLD_JWT_SECRET").secret.default(Secret("dev-secret-do-not-use-in-production")),
       env("REALWORLD_TOKEN_TTL_MINUTES").as[Int].default(60 * 24).map(_.minutes),
       env("REALWORLD_BCRYPT_LOG_ROUNDS").as[Int].default(10),
+      // Distinguishes the article-id generators of servers running at the same time. Every instance
+      // sharing one would let two of them mint the same identifier in the same millisecond.
+      env("REALWORLD_NODE_ID").as[Int].default(1),
       database
     ).parMapN(AppConfig.apply)

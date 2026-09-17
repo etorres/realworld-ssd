@@ -2,7 +2,6 @@ package realworld.comments
 
 import cats.effect.IO
 import cats.mtl.Raise
-import cats.syntax.all.*
 import io.circe.parser
 import org.http4s.circe.CirceEntityCodec.given
 import org.http4s.{HttpApp, Method, Request, Response, Uri}
@@ -11,6 +10,7 @@ import realworld.Rejections
 import realworld.articles.boundary.{Articles, ArticlesRoutes, PublishArticle}
 import realworld.articles.control.ArticleView
 import realworld.articles.entity.ArticleError
+import realworld.articles.ArticlesFixture.TestNode
 import realworld.articles.control.{ArticleRepository, FavoriteRepository}
 import realworld.comments.boundary.{Comments, CommentsRoutes}
 import realworld.comments.control.CommentRepository
@@ -56,7 +56,7 @@ object CommentsFixture:
       )
       profiles = Profiles.postgres[IO](users, pool)
       tags = Tags.postgres[IO](pool)
-      articles <- Articles.postgres[IO](pool, users, profiles, tags)
+      articles <- Articles.postgres[IO](pool, TestNode, users, profiles, tags)
       comments = Comments.postgres[IO](pool, articles, profiles)
     yield
       val caller = CallerAuth(users)

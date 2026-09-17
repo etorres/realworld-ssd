@@ -7,6 +7,7 @@ import org.http4s.circe.CirceEntityCodec.given
 import org.http4s.{Method, Status}
 
 import realworld.RequirementSuite
+import realworld.support.TestDatabase
 import realworld.articles.control.{ArticleFilter, Page}
 
 import ArticlesFixture.*
@@ -43,6 +44,34 @@ class ListArticlesSuite extends RequirementSuite[ArticlesFixture]:
         yield
           assertEquals(slugs(page), published.reverse)
           assertEquals(page.total, 3)
+    ),
+    (
+      "R2.1",
+      "keeps the newest first when articles share a creation instant and a row is rewritten",
+      // The clock normally separates every publish, which hides what breaks a tie. This makes the tie
+      // happen, then rewrites a row so storage would reorder it if nothing else decided.
+      fixture =>
+        for
+          (jake, _, published) <- library(fixture)
+          _ <- TestDatabase.flatten("articles")
+          _ <- accepted(
+            fixture.articles.updateArticle(
+              jake,
+              "oldest",
+              realworld.articles.boundary.UpdateArticle(
+                None,
+                "rewritten".some,
+                None,
+                realworld.articles.control.TagUpdate.Unchanged
+              )
+            )
+          )
+          page <- fixture.articles.listArticles(None, everything, firstPage)
+        yield assertEquals(
+          slugs(page),
+          published.reverse,
+          "articles sharing a creation instant came back in storage order"
+        )
     ),
     (
       "R2.2",

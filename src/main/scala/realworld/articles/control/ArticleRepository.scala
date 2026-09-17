@@ -1,11 +1,10 @@
 package realworld.articles.control
 
 import java.time.{Instant, OffsetDateTime, ZoneOffset}
-import java.util.UUID
 
 import cats.effect.kernel.{Concurrent, Ref, Resource, Sync}
 import cats.syntax.all.*
-import skunk.codec.all.{text, timestamptz, uuid, _text}
+import skunk.codec.all.{int8, text, timestamptz, uuid, _text}
 import skunk.data.Arr
 import skunk.implicits.*
 import skunk.{Codec, Command, Query, Session, Void}
@@ -65,7 +64,7 @@ object ArticleRepository:
   val Tables: List[Command[Void]] =
     List(
       sql"""CREATE TABLE IF NOT EXISTS articles (
-              id          uuid PRIMARY KEY,
+              id          bigint PRIMARY KEY,
               slug        text NOT NULL UNIQUE,
               title       text NOT NULL,
               description text NOT NULL,
@@ -78,7 +77,7 @@ object ArticleRepository:
     )
 
   private val article: Codec[Article] =
-    (uuid *: text *: text *: text *: text *: _text *: uuid *: timestamptz *: timestamptz).imap {
+    (int8 *: text *: text *: text *: text *: _text *: uuid *: timestamptz *: timestamptz).imap {
       case (id, slug, title, description, body, tags, author, createdAt, updatedAt) =>
         Article(
           id = ArticleId(id),
@@ -112,11 +111,14 @@ object ArticleRepository:
   private val BySlug: Query[String, Article] =
     sql"SELECT #$Columns FROM articles WHERE slug = $text".query(article)
 
-  /** Oldest first, matching the algebra. No tie-break: what happens to articles sharing a creation
-    * instant is the measurement hazard H1 exists to take.
+  /** Oldest first, and the identifier breaks a tie.
+    *
+    * Without that second key the order of articles sharing a creation instant is the heap's, and a
+    * rewritten row moves to the end of it — which R5.2 does on every title change. `ArticleId` is a TSID,
+    * so it already carries the order they were created in.
     */
   private val All: Query[Void, Article] =
-    sql"SELECT #$Columns FROM articles ORDER BY created_at".query(article)
+    sql"SELECT #$Columns FROM articles ORDER BY created_at, id".query(article)
 
   private val Upsert: Command[Article] =
     sql"""INSERT INTO articles (#$Columns) VALUES ($article)
@@ -128,4 +130,4 @@ object ArticleRepository:
             tags        = EXCLUDED.tags,
             updated_at  = EXCLUDED.updated_at""".command
 
-  private val Delete: Command[UUID] = sql"DELETE FROM articles WHERE id = $uuid".command
+  private val Delete: Command[Long] = sql"DELETE FROM articles WHERE id = $int8".command

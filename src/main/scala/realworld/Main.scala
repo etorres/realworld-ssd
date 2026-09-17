@@ -45,7 +45,7 @@ object Main extends IOApp.Simple:
         .toResource
       profiles = Profiles.postgres[IO](users, pool)
       tags = Tags.postgres[IO](pool)
-      articles <- Articles.postgres[IO](pool, users, profiles, tags).toResource
+      articles <- Articles.postgres[IO](pool, config.nodeId, users, profiles, tags).toResource
       comments = Comments.postgres[IO](pool, articles, profiles)
       caller = CallerAuth(users)
       api = Api(

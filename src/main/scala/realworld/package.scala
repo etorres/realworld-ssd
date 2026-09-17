@@ -86,6 +86,15 @@
   *   Doobie because it stays in the effect system rather than wrapping JDBC's blocking model, and its
   *   codecs are written rather than derived; rejected: Doobie over JDBC, deleting the in-memory
   *   repositories, keeping D3 and treating durability as out of scope)_
+  * - D12 — An article's identity is a TSID: a 64-bit identifier whose high bits are the millisecond it
+  *   was minted in, so it sorts by creation order. _(why: R2.1 and R3.1 order articles by creation, and
+  *   the tie between two created in the same instant was being settled by whatever the storage happened
+  *   to return — the insertion order of a `Vector`, then PostgreSQL's heap, which moves when a row is
+  *   rewritten; putting the order in the identity makes both implementations agree by construction
+  *   rather than by coincidence. The identity is never published, since an article is addressed by its
+  *   slug. Rejected: a `bigserial` column, which would fix only the SQL implementation and exists only
+  *   to keep a test green; UUIDv7, whose sub-millisecond monotonicity is optional in RFC 9562 and so
+  *   settles nothing; leaving the tie to the storage)_
   *
   * ## Stack
   * - Scala 3 + Typelevel (cats-effect · http4s · circe · cats-mtl) on sbt · base package `realworld`

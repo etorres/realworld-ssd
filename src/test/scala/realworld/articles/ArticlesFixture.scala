@@ -10,7 +10,6 @@ import realworld.Rejections
 import realworld.articles.boundary.{Articles, ArticlesRoutes, PublishArticle}
 import realworld.articles.control.ArticleView
 import realworld.articles.entity.ArticleError
-import cats.syntax.all.*
 
 import realworld.articles.control.{ArticleRepository, FavoriteRepository}
 import realworld.profiles.boundary.{Profiles, ProfilesRoutes}
@@ -41,6 +40,9 @@ final case class ArticlesFixture(
 
 object ArticlesFixture:
 
+  /** Any node will do: the tests run one generator at a time. */
+  val TestNode = 1
+
   def apply(): IO[ArticlesFixture] =
     for
       pool <- TestDatabase.fresh(
@@ -55,7 +57,7 @@ object ArticlesFixture:
       )
       profiles = Profiles.postgres[IO](users, pool)
       tags = Tags.postgres[IO](pool)
-      articles <- Articles.postgres[IO](pool, users, profiles, tags)
+      articles <- Articles.postgres[IO](pool, TestNode, users, profiles, tags)
     yield
       val caller = CallerAuth(users)
       val api = Api(

@@ -1,8 +1,6 @@
 package realworld.comments.control
 
 import java.time.{Instant, OffsetDateTime, ZoneOffset}
-import java.util.UUID
-
 import cats.effect.kernel.{Concurrent, Ref, Resource, Sync}
 import cats.syntax.all.*
 import skunk.codec.all.{int8, text, timestamptz, uuid}
@@ -69,7 +67,7 @@ object CommentRepository:
       sql"CREATE SEQUENCE IF NOT EXISTS comment_ids AS bigint START 1".command,
       sql"""CREATE TABLE IF NOT EXISTS comments (
               id         bigint PRIMARY KEY,
-              article    uuid NOT NULL,
+              article    bigint NOT NULL,
               body       text NOT NULL,
               author     uuid NOT NULL,
               created_at timestamptz NOT NULL,
@@ -78,7 +76,7 @@ object CommentRepository:
     )
 
   private val comment: Codec[Comment] =
-    (int8 *: uuid *: text *: uuid *: timestamptz *: timestamptz).imap {
+    (int8 *: int8 *: text *: uuid *: timestamptz *: timestamptz).imap {
       case (id, article, body, author, createdAt, updatedAt) =>
         Comment(
           id = CommentId(id),
@@ -118,7 +116,7 @@ object CommentRepository:
     * BC hands out in sequence, so it already *is* the creation order; `articles` has no such column,
     * which is why hazard H1 stays open there.
     */
-  private val ForArticle: Query[UUID, Comment] =
-    sql"SELECT #$Columns FROM comments WHERE article = $uuid ORDER BY created_at, id".query(comment)
+  private val ForArticle: Query[Long, Comment] =
+    sql"SELECT #$Columns FROM comments WHERE article = $int8 ORDER BY created_at, id".query(comment)
 
   private val Delete: Command[Long] = sql"DELETE FROM comments WHERE id = $int8".command

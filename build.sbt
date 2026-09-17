@@ -12,6 +12,7 @@ val cirisV      = "3.15.1"
 val log4catsV   = "2.8.0"
 val logbackV    = "1.5.18"
 val jbcryptV    = "0.4"
+val tsidV       = "2.1.4"
 val munitCeV    = "2.2.0"
 val skunkV      = "0.6.4"
 val tcV         = "0.43.0"
@@ -50,6 +51,7 @@ lazy val root = project
       "org.typelevel"        %% "log4cats-slf4j"             % log4catsV,
       "ch.qos.logback"        % "logback-classic"            % logbackV % Runtime,
       "org.mindrot"           % "jbcrypt"                    % jbcryptV,
+      "io.hypersistence"      % "hypersistence-tsid"         % tsidV,
       "org.tpolecat"         %% "skunk-core"                 % skunkV,
       "org.typelevel"        %% "munit-cats-effect"          % munitCeV % Test,
       "org.typelevel"        %% "cats-effect-testkit"        % catsEffectV % Test,

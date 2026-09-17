@@ -4,6 +4,7 @@ import cats.effect.IO
 import cats.syntax.all.*
 
 import realworld.RequirementSuite
+import realworld.support.TestDatabase
 import realworld.comments.entity.CommentError
 
 import CommentsFixture.*
@@ -36,6 +37,31 @@ class ListCommentsSuite extends RequirementSuite[CommentsFixture]:
           List("second", "first"),
           "wrong order, or a comment from another article leaked in"
         )
+    ),
+    (
+      "R2.1",
+      "keeps the newest first when comments share a creation instant and a slot is reused",
+      // Deleting a comment frees a slot; a vacuum lets the next insert take it. Without a tie-break the
+      // new comment then comes back from the middle of the table rather than the front.
+      fixture =>
+        for
+          jake <- article(fixture)
+          first <- accepted(fixture.comments.addComment(jake, "dragons", "first"))
+          second <- accepted(fixture.comments.addComment(jake, "dragons", "second"))
+          _ <- accepted(fixture.comments.addComment(jake, "dragons", "third"))
+          _ <- TestDatabase.flatten("comments")
+          _ <- accepted(fixture.comments.deleteComment(jake, "dragons", second.comment.id.value))
+          _ <- TestDatabase.vacuum("comments")
+          _ <- accepted(fixture.comments.addComment(jake, "dragons", "fourth"))
+          _ <- TestDatabase.flatten("comments")
+          views <- accepted(fixture.comments.listComments(None, "dragons"))
+        yield
+          assertEquals(first.comment.id.value < second.comment.id.value, true, "ids are not in sequence")
+          assertEquals(
+            views.map(_.comment.body),
+            List("fourth", "third", "first"),
+            "comments sharing a creation instant came back in storage order"
+          )
     ),
     (
       "R2.2",

@@ -1,10 +1,8 @@
 package realworld.articles.control
 
-import java.util.UUID
-
 import cats.effect.kernel.{Concurrent, Ref, Resource, Sync}
 import cats.syntax.all.*
-import skunk.codec.all.uuid
+import skunk.codec.all.{int8, uuid}
 import skunk.implicits.*
 import skunk.{Codec, Command, Query, Session, Void}
 
@@ -59,13 +57,13 @@ object FavoriteRepository:
     List(
       sql"""CREATE TABLE IF NOT EXISTS favorites (
               favoriter uuid NOT NULL,
-              article   uuid NOT NULL,
+              article   bigint NOT NULL,
               PRIMARY KEY (favoriter, article)
             )""".command
     )
 
   private val favorite: Codec[Favorite] =
-    (uuid *: uuid).imap((user, article) => Favorite(UserId(user), ArticleId(article)))(row =>
+    (uuid *: int8).imap((user, article) => Favorite(UserId(user), ArticleId(article)))(row =>
       (row.user.value, row.article.value)
     )
 
@@ -75,7 +73,7 @@ object FavoriteRepository:
     sql"INSERT INTO favorites (favoriter, article) VALUES ($favorite) ON CONFLICT DO NOTHING".command
 
   private val Delete: Command[Favorite] =
-    sql"DELETE FROM favorites WHERE favoriter = $uuid AND article = $uuid".command
+    sql"DELETE FROM favorites WHERE favoriter = $uuid AND article = $int8".command
       .contramap(row => (row.user.value, row.article.value))
 
-  private val DeleteAllOf: Command[UUID] = sql"DELETE FROM favorites WHERE article = $uuid".command
+  private val DeleteAllOf: Command[Long] = sql"DELETE FROM favorites WHERE article = $int8".command

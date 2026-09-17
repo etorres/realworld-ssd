@@ -1,9 +1,10 @@
 package realworld.articles.control
 
+import java.time.Instant
+
 import cats.MonadThrow
 import cats.data.NonEmptyChain
 import cats.effect.kernel.Clock
-import cats.effect.std.UUIDGen
 import cats.mtl.Raise
 import cats.mtl.syntax.all.*
 import cats.syntax.all.*
@@ -50,9 +51,10 @@ enum TagUpdate:
   case WithoutValue
 
 /** The `articles` use cases. */
-final class ArticleService[F[_]: MonadThrow: UUIDGen: Clock](
+final class ArticleService[F[_]: MonadThrow: Clock](
     articles: ArticleRepository[F],
     favorites: FavoriteRepository[F],
+    ids: ArticleIds[F],
     accounts: Users[F],
     profiles: Profiles[F],
     tags: Tags[F]
@@ -70,7 +72,7 @@ final class ArticleService[F[_]: MonadThrow: UUIDGen: Clock](
     for
       _ <- rejectBlank(List("title" -> title, "description" -> description, "body" -> body))
       now <- Clock[F].realTimeInstant
-      id <- UUIDGen[F].randomUUID.map(ArticleId.apply)
+      id <- ids.next
       slug <- available(Slug.from(title))
       attached = normalised(declared.getOrElse(Nil))
       article = Article(id, slug, title, description, body, attached, author, now, now)
@@ -164,15 +166,21 @@ final class ArticleService[F[_]: MonadThrow: UUIDGen: Clock](
       view <- viewOf(article, caller.some)
     yield view
 
-  /** Newest first (R2.1, R3.1). The sort is stable and the repository yields insertion order, so articles
-    * created within the same clock tick still come back newest first.
+  /** Newest first (R2.1, R3.1), by creation instant and then by identifier.
+    *
+    * The identifier is a tie-break rather than the key: it carries its own clock reading, and `createdAt`
+    * is the field the spec talks about. It used to be neither — the sort truncated to the millisecond and
+    * leaned on the repository yielding insertion order, which no storage ever promised.
     */
   private def paged(matching: List[Article], caller: Option[UserId], page: Page): F[ArticlePage] =
-    val ordered = matching.sortBy(_.createdAt.toEpochMilli).reverse
+    val ordered = matching.sorted(using Newest)
     ordered
       .slice(page.offset, page.offset + page.limit)
       .traverse(viewOf(_, caller))
       .map(ArticlePage(_, ordered.size))
+
+  private val Newest: Ordering[Article] =
+    Ordering.by[Article, (Instant, Long)](article => (article.createdAt, article.id.value)).reverse
 
   private def viewOf(article: Article, caller: Option[UserId]): F[ArticleView] =
     for

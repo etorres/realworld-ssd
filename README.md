@@ -126,6 +126,13 @@ Configuration is read from the environment, all of it optional:
 | `REALWORLD_JWT_SECRET` | a development placeholder — set this for anything real |
 | `REALWORLD_TOKEN_TTL_MINUTES` | `1440` |
 | `REALWORLD_BCRYPT_LOG_ROUNDS` | `10` |
+| `REALWORLD_NODE_ID` | `1` — distinguishes the article-id generators of servers running at once |
+| `REALWORLD_DB_HOST` | `localhost` |
+| `REALWORLD_DB_PORT` | `5432` |
+| `REALWORLD_DB_USER` | `realworld` |
+| `REALWORLD_DB_PASSWORD` | `realworld` |
+| `REALWORLD_DB_NAME` | `realworld` |
+| `REALWORLD_DB_POOL_SIZE` | `8` |
 
 ## Storage
 
@@ -154,6 +161,10 @@ the specifications were describing behaviour or describing the implementation.
 
 **All five capabilities now run on PostgreSQL, and not one of the 118 requirement statements changed.**
 Three tests did: they drove `TestControl`, and virtual time cannot complete a socket read.
+
+The swap also found an ordering hazard that no test could see — articles sharing a creation instant were
+ordered by whatever storage returned. `ArticleId` is now a TSID (decision D12), so the identity carries
+the order instead of borrowing it.
 
 [`docs/postgres-swap.md`](docs/postgres-swap.md) was written before the swap started — the surface, the
 hazards, and the three possible outcomes fixed in advance so the result could not be decided afterwards
