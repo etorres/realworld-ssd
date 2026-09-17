@@ -84,8 +84,9 @@ Measured: ten back-to-back publishes land at
 …46.655259Z  …46.655375Z  …46.655472Z  …46.655580Z  …46.655676Z
 ```
 
-**Seven of the ten share a millisecond with a neighbour.** The suite passes today only because
-`ListArticlesSuite` publishes just three articles while the JIT is still cold, spacing them ~1 ms apart.
+**The ten land in three distinct milliseconds; nine of them share one with another article.** The suite
+passes today only because `ListArticlesSuite` publishes just three articles while the JIT is still cold,
+which spaces them far enough apart.
 `SELECT … ORDER BY created_at DESC` returns rows in an unspecified order within equal keys, and articles
 have no monotonic column to break the tie — `ArticleId` is a random UUID.
 
@@ -412,7 +413,7 @@ drawing any conclusion:
 distinct milliseconds: 10 of 10        order correct: true
 ```
 
-Against `Ref` the same ten publishes collided seven times on the millisecond. They are now **12 to 66 ms
+Against `Ref` the same ten publishes landed in three distinct milliseconds. They are now **12 to 66 ms
 apart**, because each publish costs several round trips — the slug loop, the upsert, the tag
 registration, the author lookup, the favorites read. *The latency H8 counts as the cost of this swap is
 what made the ordering assertion pass.* Nothing about correctness improved.
