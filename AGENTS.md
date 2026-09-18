@@ -90,6 +90,7 @@ Compose these; they are installed under `.claude/skills/` and mirrored in `.agen
 | --- | --- |
 | `sdd4j` | the workflow: `setup` · `new` · `apply` · `verify` |
 | `sdd4j-bce` | capability → business component mapping, read through the table above |
+| `sdd4j-scala-typelevel` | the stack adapter this project's conventions were distilled into — the same overrides as the table above, plus the failure modes that produced them |
 | `sdd4j-ears-tests` | EARS group → table-driven suite, statement → labelled row |
 | `cats-effect-io` | effect suspension, `Clock`, `Random`, blocking calls, `TestControl` |
 | `cats-effect-resource` | `Resource`-returning factories and constructor injection |
