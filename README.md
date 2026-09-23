@@ -166,6 +166,8 @@ The swap also found an ordering hazard that no test could see — articles shari
 ordered by whatever storage returned. `ArticleId` is now a TSID (decision D12), so the identity carries
 the order instead of borrowing it.
 
+![The storage-swap experiment](docs/experiment-figure.png)
+
 [`docs/postgres-swap.md`](docs/postgres-swap.md) was written before the swap started — the surface, the
 hazards, and the three possible outcomes fixed in advance so the result could not be decided afterwards
 by whoever wrote it up. The results are appended to it, including the hazard that passed for the wrong

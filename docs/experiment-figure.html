@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The storage-swap experiment</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,ital,wght@6..72,0,400;6..72,0,500;6..72,1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --paper:  #FBFBF9;
+    --ink:    #1A1C1B;
+    --muted:  #636865;
+    --soft:   #8B908C;
+    --rule:   #DEDFD8;
+    --accent: #1E3A5F;
+    --font-sans:  'IBM Plex Sans', system-ui, sans-serif;
+    --font-serif: 'Newsreader', Georgia, serif;
+    --font-mono:  'IBM Plex Mono', ui-monospace, monospace;
+  }
+  body {
+    font-family: var(--font-sans);
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 3rem 1.5rem;
+  }
+  /* block + auto margins, not flex: a flex item will not shrink below the
+     SVG's 520px intrinsic width, which clipped the sibling figure on a phone. */
+  .frame { max-width: 560px; margin: 0 auto; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 0.66rem; font-weight: 500;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--soft);
+    margin-bottom: 0.45rem;
+  }
+  h1 {
+    font-family: var(--font-serif); font-size: 1.75rem; font-weight: 500;
+    line-height: 1.12; letter-spacing: -0.01em; margin-bottom: 0.5rem;
+  }
+  .standfirst {
+    font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55;
+    color: var(--muted); margin-bottom: 1.75rem; max-width: 48ch;
+  }
+  svg { display: block; width: 100%; height: auto; }
+  .colophon {
+    margin-top: 1.5rem; padding-top: 0.9rem; border-top: 1px solid var(--rule);
+    font-family: var(--font-mono); font-size: 0.66rem; color: var(--soft); line-height: 1.7;
+  }
+</style>
+</head>
+<body>
+<div class="frame">
+  <p class="eyebrow">Spec-driven development</p>
+  <h1>The storage-swap experiment</h1>
+  <p class="standfirst">Do the specifications describe behaviour, or describe the implementation? The answer is only worth having if the reference is recorded before the work starts.</p>
+
+<svg viewBox="0 0 520 890" role="img" aria-labelledby="swap-experiment-title swap-experiment-desc" xmlns="http://www.w3.org/2000/svg">
+  <title id="swap-experiment-title">The storage-swap experiment</title>
+  <desc id="swap-experiment-desc">Three steps run top to bottom: build the backend on in-memory storage, swap it to PostgreSQL, then re-measure. A reference recorded during the first step, holding a hash of each of the 118 requirement statements and the three outcomes declared in advance, is carried down the left side and compared at the end. None of the statements changed, so the specifications are neutral; the alternative outcome, specifications leaking, was not observed.</desc>
+
+  <defs>
+    <marker id="swap-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#636865"/>
+    </marker>
+    <marker id="swap-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#1E3A5F"/>
+    </marker>
+    <marker id="swap-arrow-soft" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#8B908C"/>
+    </marker>
+  </defs>
+
+  <rect width="520" height="890" fill="#FBFBF9"/>
+
+  <!-- ===== connectors, drawn before the boxes ===== -->
+
+  <!-- spine -->
+  <line x1="260" y1="144" x2="260" y2="176" stroke="#636865" stroke-width="1.2" marker-end="url(#swap-arrow)"/>
+  <line x1="260" y1="256" x2="260" y2="288" stroke="#636865" stroke-width="1.2" marker-end="url(#swap-arrow)"/>
+  <line x1="260" y1="388" x2="260" y2="420" stroke="#636865" stroke-width="1.2" marker-end="url(#swap-arrow)"/>
+  <line x1="260" y1="500" x2="260" y2="528" stroke="#636865" stroke-width="1.2" marker-end="url(#swap-arrow)"/>
+
+  <!-- the reference, carried from step one down to the comparison -->
+  <path d="M 112 220 H 64 Q 56 220 56 228 V 576 Q 56 584 64 584 H 144"
+        fill="none" stroke="#1E3A5F" stroke-width="1.2" marker-end="url(#swap-arrow-accent)"/>
+  <rect x="68" y="564" width="72" height="13" rx="2" fill="#FBFBF9"/>
+  <text x="104" y="573.5" fill="#1E3A5F" font-size="8" font-family="'IBM Plex Mono', monospace"
+        text-anchor="middle" letter-spacing="0.10em">BASELINE</text>
+
+  <!-- no: the statements are unchanged -->
+  <path d="M 260 632 V 652 Q 260 660 252 660 H 152 Q 144 660 144 668 V 680"
+        fill="none" stroke="#636865" stroke-width="1.2" marker-end="url(#swap-arrow)"/>
+  <rect x="272" y="634" width="24" height="13" rx="2" fill="#FBFBF9"/>
+  <text x="284" y="643.5" fill="#636865" font-size="8" font-family="'IBM Plex Mono', monospace"
+        text-anchor="middle" letter-spacing="0.10em">NO</text>
+
+  <!-- yes: an alternative that did not happen -->
+  <path d="M 368 584 H 380 Q 388 584 388 592 V 680"
+        fill="none" stroke="#8B908C" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#swap-arrow-soft)"/>
+  <rect x="396" y="608" width="26" height="13" rx="2" fill="#FBFBF9"/>
+  <text x="409" y="617.5" fill="#8B908C" font-size="8" font-family="'IBM Plex Mono', monospace"
+        text-anchor="middle" letter-spacing="0.10em">YES</text>
+
+  <!-- ===== step one ===== -->
+  <rect x="112" y="52" width="296" height="92" rx="6" fill="#FBFBF9"/>
+  <rect x="112" y="52" width="296" height="92" rx="6" fill="#FFFFFF" stroke="#1A1C1B" stroke-width="1"/>
+  <rect x="124" y="64" width="24" height="13" rx="2" fill="none" stroke="#1A1C1B" stroke-opacity="0.40" stroke-width="0.8"/>
+  <text x="136" y="73.5" fill="#1A1C1B" fill-opacity="0.8" font-size="7" font-family="'IBM Plex Mono', monospace"
+        text-anchor="middle" letter-spacing="0.08em">01</text>
+  <text x="260" y="98" fill="#1A1C1B" font-size="13" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif" text-anchor="middle">Build on in-memory storage</text>
+  <text x="260" y="116" fill="#636865" font-size="9" font-family="'IBM Plex Mono', monospace"
+        text-anchor="middle">decision D3 · Ref-backed · 5 components</text>
+  <text x="260" y="131" fill="#636865" font-size="9" font-family="'IBM Plex Mono', monospace"
+        text-anchor="middle">118 statements · 120 tests · Hurl 13/13</text>
+
+  <!-- ===== the reference (focal) ===== -->
+  <rect x="112" y="184" width="296" height="72" rx="6" fill="#FBFBF9"/>
+  <rect x="112" y="184" width="296" height="72" rx="6" fill="#1E3A5F" fill-opacity="0.06"
+        stroke="#1E3A5F" stroke-width="1"/>
+  <rect x="124" y="196" width="34" height="13" rx="2" fill="none" stroke="#1E3A5F" stroke-opacity="0.45" stroke-width="0.8"/>
+  <text x="141" y="205.5" fill="#1E3A5F" font-size="7" font-family="'IBM Plex Mono', monospace"
+        text-anchor="middle" letter-spacing="0.08em">REF</text>
+  <text x="260" y="226" fill="#1A1C1B" font-size="13" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif" text-anchor="middle">Record the reference</text>
+  <text x="260" y="244" fill="#636865" font-size="9" font-family="'IBM Plex Mono', monospace"
+        text-anchor="middle">118 statement hashes · 3 outcomes declared</text>
+
+  <!-- ===== step two ===== -->
+  <rect x="112" y="288" width="296" height="100" rx="6" fill="#FBFBF9"/>
+  <rect x="112" y="288" width="296" height="100" rx="6" fill="#FFFFFF" stroke="#1A1C1B" stroke-width="1"/>
+  <rect x="124" y="300" width="24" height="13" rx="2" fill="none" stroke="#1A1C1B" stroke-opacity="0.40" stroke-width="0.8"/>
+  <text x="136" y="309.5" fill="#1A1C1B" fill-opacity="0.8" font-size="7" font-family="'IBM Plex Mono', monospace"
+        text-anchor="middle" letter-spacing="0.08em">02</text>
+  <text x="260" y="334" fill="#1A1C1B" font-size="13" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif" text-anchor="middle">Swap to PostgreSQL</text>
+  <text x="260" y="352" fill="#636865" font-size="9" font-family="'IBM Plex Mono', monospace"
+        text-anchor="middle">decision D11 · Skunk · one capability at a time</text>
+  <text x="260" y="370" fill="#636865" font-size="9" font-family="'IBM Plex Mono', monospace"
+        text-anchor="middle">tags → users → profiles → articles → comments</text>
+
+  <!-- ===== step three ===== -->
+  <rect x="112" y="420" width="296" height="80" rx="6" fill="#FBFBF9"/>
+  <rect x="112" y="420" width="296" height="80" rx="6" fill="#FFFFFF" stroke="#1A1C1B" stroke-width="1"/>
+  <rect x="124" y="432" width="24" height="13" rx="2" fill="none" stroke="#1A1C1B" stroke-opacity="0.40" stroke-width="0.8"/>
+  <text x="136" y="441.5" fill="#1A1C1B" fill-opacity="0.8" font-size="7" font-family="'IBM Plex Mono', monospace"
+        text-anchor="middle" letter-spacing="0.08em">03</text>
+  <text x="260" y="466" fill="#1A1C1B" font-size="13" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif" text-anchor="middle">Re-measure</text>
+  <text x="260" y="486" fill="#636865" font-size="9" font-family="'IBM Plex Mono', monospace"
+        text-anchor="middle">122 tests · Hurl 13/13 · sbt test 4s → 8s</text>
+
+  <!-- ===== the comparison ===== -->
+  <path d="M 260 528 L 368 584 L 260 640 L 152 584 Z" fill="#FBFBF9"/>
+  <path d="M 260 528 L 368 584 L 260 640 L 152 584 Z" fill="#FFFFFF" stroke="#1A1C1B" stroke-width="1"/>
+  <text x="260" y="580" fill="#1A1C1B" font-size="12" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif" text-anchor="middle">Any of the 118</text>
+  <text x="260" y="596" fill="#1A1C1B" font-size="12" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif" text-anchor="middle">reworded?</text>
+
+  <!-- ===== the outcome that happened (focal) ===== -->
+  <rect x="32" y="680" width="224" height="88" rx="6" fill="#FBFBF9"/>
+  <rect x="32" y="680" width="224" height="88" rx="6" fill="#1E3A5F" fill-opacity="0.06"
+        stroke="#1E3A5F" stroke-width="1.4"/>
+  <text x="144" y="712" fill="#1A1C1B" font-size="13" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif" text-anchor="middle">Specs neutral</text>
+  <text x="144" y="732" fill="#1E3A5F" font-size="9" font-family="'IBM Plex Mono', monospace"
+        text-anchor="middle">0 of 118 statements changed</text>
+  <text x="144" y="748" fill="#1E3A5F" font-size="9" font-family="'IBM Plex Mono', monospace"
+        text-anchor="middle">0 assertions modified</text>
+
+  <!-- ===== the outcome that did not ===== -->
+  <rect x="288" y="680" width="200" height="88" rx="6" fill="#FBFBF9"/>
+  <rect x="288" y="680" width="200" height="88" rx="6" fill="#1A1C1B" fill-opacity="0.02"
+        stroke="#1A1C1B" stroke-opacity="0.22" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="388" y="712" fill="#8B908C" font-size="13" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif" text-anchor="middle">Specs leaked</text>
+  <text x="388" y="732" fill="#8B908C" font-size="9" font-family="'IBM Plex Mono', monospace"
+        text-anchor="middle">a statement reworded</text>
+  <text x="388" y="748" fill="#8B908C" font-size="9" font-family="'IBM Plex Mono', monospace"
+        text-anchor="middle">to fit the storage</text>
+  <text x="388" y="764" fill="#8B908C" font-size="8" font-family="'IBM Plex Mono', monospace"
+        text-anchor="middle" letter-spacing="0.10em">NOT OBSERVED</text>
+
+  <!-- ===== the third outcome, which the framing missed ===== -->
+  <line x1="32" y1="800" x2="488" y2="800" stroke="#DEDFD8" stroke-width="1"/>
+  <text x="32" y="822" fill="#8B908C" font-size="8" font-family="'IBM Plex Mono', monospace"
+        letter-spacing="0.14em">THIRD OUTCOME</text>
+  <text x="32" y="846" fill="#1A1C1B" font-size="14" font-style="italic"
+        font-family="'Newsreader', Georgia, serif">Tests leaked. Three arrangements rewritten: the specs held,</text>
+  <text x="32" y="864" fill="#1A1C1B" font-size="14" font-style="italic"
+        font-family="'Newsreader', Georgia, serif">the test strategy did not.</text>
+</svg>
+
+  <p class="colophon">
+    RealWorld backend · Scala 3 + Typelevel · SDD4J<br>
+    Reference recorded by <code>scripts/spec-baseline.sh</code>; outcomes fixed in <code>docs/postgres-swap.md</code> before the swap began.
+  </p>
+</div>
+</body>
+</html>
