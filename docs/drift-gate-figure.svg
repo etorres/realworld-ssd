@@ -4,7 +4,7 @@
   <desc id="sdd4j-gate-desc">Requirement ids declared in specification files and claimed by test names are scoped per capability, then checked in two directions. A statement with no test, or a test claiming an undeclared id, fails the build; passing both checks lets the build pass.</desc>
 
   <defs>
-    <style>@import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz,ital,wght@6..72,0,400;6..72,0,500;6..72,1,400&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap');</style>
     <marker id="sdd4j-gate-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
       <polygon points="0 0, 8 3, 0 6" fill="#636865"/>
     </marker>
@@ -112,7 +112,7 @@
   <rect x="32" y="656" width="232" height="72" rx="20" fill="#FBFBF9"/>
   <rect x="32" y="656" width="232" height="72" rx="20" fill="#2e7d4f" fill-opacity="0.10" stroke="#2E7D4F" stroke-width="1.5"/>
   <text x="148" y="690" fill="#2E7D4F" font-size="12" font-weight="600" font-family="'IBM Plex Sans', sans-serif" text-anchor="middle">Build passes</text>
-  <text x="148" y="707" fill="#2E7D4F" font-size="9" font-family="'IBM Plex Mono', monospace" text-anchor="middle">118 ids traced · 120 tests</text>
+  <text x="148" y="707" fill="#2E7D4F" font-size="9" font-family="'IBM Plex Mono', monospace" text-anchor="middle">118 ids traced · 122 tests</text>
 
   <!-- ============ legend strip ============ -->
   <line x1="32" y1="788" x2="488" y2="788" stroke="#1a1c1b" stroke-opacity="0.12" stroke-width="0.8"/>

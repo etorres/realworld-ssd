@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The drift gate — slide</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,ital,wght@6..72,0,400;6..72,0,500;6..72,1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --paper:  #FBFBF9;
+    --ink:    #1A1C1B;
+    --muted:  #636865;
+    --soft:   #8B908C;
+    --rule:   #DEDFD8;
+    --accent: #1E3A5F;
+    --pass:   #2E7D4F;
+    --fail:   #B23A2B;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+  body {
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    background: #EFEFEC;
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 2rem 1.5rem;
+  }
+  /* block + auto margins, not flex: a flex item will not shrink below the SVG's
+     intrinsic width, which clipped the first figure of this set on a phone. */
+  .frame { max-width: 1280px; margin: 0 auto; }
+  svg { display: block; width: 100%; height: auto; }
+  .colophon {
+    margin-top: 1rem; font-family: var(--font-mono); font-size: 0.66rem;
+    color: var(--soft); line-height: 1.7;
+  }
+</style>
+</head>
+<body>
+<div class="frame">
+
+<!-- The title lives inside the SVG on this variant: the PNG export is diagram-only,
+     and a slide image has to stand on its own once it is dropped into a deck. -->
+<svg viewBox="0 0 1280 720" role="img" aria-labelledby="gate-slide-title gate-slide-desc" xmlns="http://www.w3.org/2000/svg">
+  <title id="gate-slide-title">The drift gate</title>
+  <desc id="gate-slide-desc">Two sources of requirement ids, the specification files and the requirement suites, feed a scoping step that keeps each capability's ids separate. Two checks then run in both directions: every requirement must have a test, and every id a test claims must be declared by its own capability's specification. A failure in either direction turns the build red; passing both leaves it green.</desc>
+
+  <defs>
+    <marker id="gate-arrow" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <polygon points="0 0, 9 3.5, 0 7" fill="#636865"/>
+    </marker>
+    <marker id="gate-arrow-fail" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <polygon points="0 0, 9 3.5, 0 7" fill="#B23A2B"/>
+    </marker>
+    <marker id="gate-arrow-pass" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <polygon points="0 0, 9 3.5, 0 7" fill="#2E7D4F"/>
+    </marker>
+  </defs>
+
+  <rect width="1280" height="720" fill="#FBFBF9"/>
+
+  <!-- ===== title ===== -->
+  <text x="64" y="62" fill="#8B908C" font-size="8" font-family="'IBM Plex Mono', monospace"
+        letter-spacing="0.18em">WHAT SBT TEST ENFORCES ON EVERY BUILD</text>
+  <text x="64" y="106" fill="#1A1C1B" font-size="40" font-weight="500"
+        font-family="'Newsreader', Georgia, serif">The drift gate</text>
+
+  <!-- ===== connectors, drawn before the nodes ===== -->
+  <!-- the two id sources converge on the scoping step, each on its own attach point -->
+  <path d="M 272 228 H 278 Q 286 228 286 236 V 280 Q 286 288 294 288 H 296"
+        fill="none" stroke="#636865" stroke-width="1.4" marker-end="url(#gate-arrow)"/>
+  <path d="M 272 372 H 278 Q 286 372 286 364 V 320 Q 286 312 294 312 H 296"
+        fill="none" stroke="#636865" stroke-width="1.4" marker-end="url(#gate-arrow)"/>
+
+  <line x1="532" y1="300" x2="556" y2="300" stroke="#636865" stroke-width="1.4" marker-end="url(#gate-arrow)"/>
+  <line x1="736" y1="300" x2="788" y2="300" stroke="#636865" stroke-width="1.4" marker-end="url(#gate-arrow)"/>
+  <line x1="968" y1="300" x2="988" y2="300" stroke="#2E7D4F" stroke-width="1.4" marker-end="url(#gate-arrow-pass)"/>
+  <line x1="648" y1="356" x2="648" y2="472" stroke="#B23A2B" stroke-width="1.4" marker-end="url(#gate-arrow-fail)"/>
+  <line x1="880" y1="356" x2="880" y2="472" stroke="#B23A2B" stroke-width="1.4" marker-end="url(#gate-arrow-fail)"/>
+
+  <rect x="746" y="272" width="32" height="16" rx="2" fill="#FBFBF9"/>
+  <text x="762" y="284" fill="#636865" font-size="12" font-family="'IBM Plex Mono', monospace"
+        text-anchor="middle" letter-spacing="0.08em">YES</text>
+  <rect x="660" y="404" width="28" height="16" rx="2" fill="#FBFBF9"/>
+  <text x="674" y="416" fill="#B23A2B" font-size="12" font-family="'IBM Plex Mono', monospace"
+        text-anchor="middle" letter-spacing="0.08em">NO</text>
+  <rect x="892" y="404" width="28" height="16" rx="2" fill="#FBFBF9"/>
+  <text x="906" y="416" fill="#B23A2B" font-size="12" font-family="'IBM Plex Mono', monospace"
+        text-anchor="middle" letter-spacing="0.08em">NO</text>
+
+  <!-- ===== the two sources of ids ===== -->
+  <rect x="64" y="192" width="208" height="72" rx="6" fill="#FBFBF9"/>
+  <rect x="64" y="192" width="208" height="72" rx="6" fill="#FFFFFF" stroke="#1A1C1B" stroke-width="1.2"/>
+  <rect x="80" y="204" width="36" height="16" rx="2" fill="none" stroke="#1A1C1B" stroke-opacity="0.40" stroke-width="0.9"/>
+  <text x="98" y="216" fill="#1A1C1B" fill-opacity="0.8" font-size="8" font-family="'IBM Plex Mono', monospace"
+        text-anchor="middle" letter-spacing="0.08em">SPEC</text>
+  <text x="80" y="240" fill="#1A1C1B" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">Spec files</text>
+  <text x="80" y="258" fill="#636865" font-size="12" font-family="'IBM Plex Mono', monospace">6 package.scala</text>
+
+  <rect x="64" y="336" width="208" height="72" rx="6" fill="#FBFBF9"/>
+  <rect x="64" y="336" width="208" height="72" rx="6" fill="#FFFFFF" stroke="#1A1C1B" stroke-width="1.2"/>
+  <rect x="80" y="348" width="36" height="16" rx="2" fill="none" stroke="#1A1C1B" stroke-opacity="0.40" stroke-width="0.9"/>
+  <text x="98" y="360" fill="#1A1C1B" fill-opacity="0.8" font-size="8" font-family="'IBM Plex Mono', monospace"
+        text-anchor="middle" letter-spacing="0.08em">TEST</text>
+  <text x="80" y="384" fill="#1A1C1B" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">Requirement suites</text>
+  <text x="80" y="402" fill="#636865" font-size="12" font-family="'IBM Plex Mono', monospace">name built from the id</text>
+
+  <!-- ===== the scoping step, the thing the gate got wrong for two sessions ===== -->
+  <rect x="300" y="264" width="232" height="72" rx="6" fill="#FBFBF9"/>
+  <rect x="300" y="264" width="232" height="72" rx="6" fill="#1E3A5F" fill-opacity="0.06"
+        stroke="#1E3A5F" stroke-width="1.6"/>
+  <text x="316" y="298" fill="#1E3A5F" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">Scope per capability</text>
+  <text x="316" y="320" fill="#1E3A5F" font-size="12" font-family="'IBM Plex Mono', monospace">ids unique within one spec</text>
+
+  <!-- ===== the two directions ===== -->
+  <path d="M 648 244 L 736 300 L 648 356 L 560 300 Z" fill="#FBFBF9"/>
+  <path d="M 648 244 L 736 300 L 648 356 L 560 300 Z" fill="#FFFFFF" stroke="#1A1C1B" stroke-width="1.2"/>
+  <text x="648" y="292" fill="#636865" font-size="12" font-family="'IBM Plex Mono', monospace"
+        text-anchor="middle">spec → test</text>
+  <text x="648" y="316" fill="#1A1C1B" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif" text-anchor="middle">has a test?</text>
+
+  <path d="M 880 244 L 968 300 L 880 356 L 792 300 Z" fill="#FBFBF9"/>
+  <path d="M 880 244 L 968 300 L 880 356 L 792 300 Z" fill="#FFFFFF" stroke="#1A1C1B" stroke-width="1.2"/>
+  <text x="880" y="292" fill="#636865" font-size="12" font-family="'IBM Plex Mono', monospace"
+        text-anchor="middle">test → spec</text>
+  <text x="880" y="316" fill="#1A1C1B" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif" text-anchor="middle">id declared?</text>
+
+  <!-- ===== the two ways the build goes red ===== -->
+  <rect x="552" y="472" width="192" height="80" rx="6" fill="#FBFBF9"/>
+  <rect x="552" y="472" width="192" height="80" rx="6" fill="#B23A2B" fill-opacity="0.05"
+        stroke="#B23A2B" stroke-width="1.2"/>
+  <text x="568" y="508" fill="#B23A2B" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">Missing test</text>
+  <text x="568" y="530" fill="#B23A2B" font-size="12" font-family="'IBM Plex Mono', monospace">no test carries it</text>
+
+  <rect x="784" y="472" width="192" height="80" rx="6" fill="#FBFBF9"/>
+  <rect x="784" y="472" width="192" height="80" rx="6" fill="#B23A2B" fill-opacity="0.05"
+        stroke="#B23A2B" stroke-width="1.2"/>
+  <text x="800" y="508" fill="#B23A2B" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">Orphan id</text>
+  <text x="800" y="530" fill="#B23A2B" font-size="12" font-family="'IBM Plex Mono', monospace">drift, never absorbed</text>
+
+  <!-- ===== green ===== -->
+  <rect x="992" y="264" width="224" height="72" rx="6" fill="#FBFBF9"/>
+  <rect x="992" y="264" width="224" height="72" rx="6" fill="#2E7D4F" fill-opacity="0.06"
+        stroke="#2E7D4F" stroke-width="1.4"/>
+  <text x="1008" y="298" fill="#2E7D4F" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">Build passes</text>
+  <text x="1008" y="320" fill="#2E7D4F" font-size="12" font-family="'IBM Plex Mono', monospace">118 ids traced · 122 tests</text>
+
+  <!-- ===== the sentence the whole gate turns on ===== -->
+  <line x1="64" y1="606" x2="1216" y2="606" stroke="#DEDFD8" stroke-width="1"/>
+  <text x="64" y="644" fill="#1A1C1B" font-size="22" font-style="italic"
+        font-family="'Newsreader', Georgia, serif">Ids are unique per capability, not globally. A gate that matches them across the whole</text>
+  <text x="64" y="672" fill="#1A1C1B" font-size="22" font-style="italic"
+        font-family="'Newsreader', Georgia, serif">test tree is satisfied by any capability, and stays green while it is blind.</text>
+</svg>
+
+  <p class="colophon">
+    Slide variant, 1280&times;720. The portrait reading version is <code>docs/drift-gate-figure.html</code>.
+  </p>
+</div>
+</body>
+</html>
