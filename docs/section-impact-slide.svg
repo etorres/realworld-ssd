@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1280 720" role="img" aria-labelledby="impact-t impact-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="impact-t">The Impact</title>
+  <desc id="impact-d">Section break 02 of three, titled The Impact. Nobody asks what the documentation costs. I counted it anyway. 118 statements, 484 lines, and a build that fails without them.</desc>
+
+  <defs>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz,ital,wght@6..72,0,400;6..72,0,500;6..72,1,400&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap');</style>
+  </defs>
+
+  <rect width="1280" height="720" fill="#FBFBF9"/>
+  <rect x="0" y="0" width="420" height="720" fill="#1E3A5F"/>
+
+  <text x="56" y="96" fill="#FBFBF9" fill-opacity="0.65" font-size="8"
+        font-family="'IBM Plex Mono', monospace" letter-spacing="0.18em">PART TWO OF THREE</text>
+  <text x="48" y="420" fill="#FBFBF9" font-size="260" font-weight="500"
+        font-family="'Newsreader', Georgia, serif">02</text>
+  <rect x="56" y="640" width="24" height="4" rx="2" fill="#FBFBF9" fill-opacity="0.30"/>
+  <rect x="90" y="640" width="24" height="4" rx="2" fill="#FBFBF9"/>
+  <rect x="124" y="640" width="24" height="4" rx="2" fill="#FBFBF9" fill-opacity="0.30"/>
+
+  <text x="512" y="96" fill="#8B908C" font-size="8" font-family="'IBM Plex Mono', monospace"
+        letter-spacing="0.18em">REALWORLD BACKEND · SCALA 3 + TYPELEVEL · SDD4J</text>
+
+  <text x="512" y="268" fill="#1A1C1B" font-size="72" font-weight="500"
+        font-family="'Newsreader', Georgia, serif">The Impact</text>
+
+  <line x1="512" y1="330" x2="1216" y2="330" stroke="#DEDFD8" stroke-width="1"/>
+
+  <text x="512" y="392" fill="#1E3A5F" font-size="30" font-style="italic"
+        font-family="'Newsreader', Georgia, serif">Nobody asks what the documentation costs.</text>
+  <text x="512" y="434" fill="#1E3A5F" font-size="30" font-style="italic"
+        font-family="'Newsreader', Georgia, serif">I counted it anyway.</text>
+
+  <text x="512" y="494" fill="#636865" font-size="14"
+        font-family="'IBM Plex Sans', sans-serif">118 statements, 484 lines, and a build that fails without them.</text>
+</svg>
