@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg viewBox="0 0 1280 720" role="img" aria-labelledby="swap-slide-dark-title swap-slide-dark-desc" xmlns="http://www.w3.org/2000/svg">
   <title id="swap-slide-dark-title">The storage-swap experiment</title>
-  <desc id="swap-slide-dark-desc">Three steps run left to right: build the backend on in-memory storage, swap it to PostgreSQL, then re-measure. A reference recorded under the first step, holding a hash of each of the 118 requirement statements and the three outcomes declared in advance, is carried across the slide to the comparison at the bottom. The specifications came through unchanged; three test arrangements did not.</desc>
+  <desc id="swap-slide-dark-desc">Three steps run left to right: build the backend on in-memory storage, swap it to PostgreSQL, then re-measure. A reference recorded under the first step, holding a hash of each of the 118 requirement statements and the three outcomes declared in advance, is carried across the slide to the comparison at the bottom. The specifications came through unchanged; three test arrangements did not, and the code grew by 647 lines of implementation and 244 of tests.</desc>
 
   <defs>
     <style>@import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz,ital,wght@6..72,0,400;6..72,0,500;6..72,1,400&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap');</style>
@@ -89,17 +89,23 @@
   <rect x="64" y="512" width="1152" height="144" rx="6" fill="#242724" stroke="#F4F4F1" stroke-width="1.2"/>
   <text x="88" y="540" fill="#8A908B" font-size="8" font-family="'IBM Plex Mono', monospace"
         letter-spacing="0.14em">COMPARED AGAINST THE REFERENCE</text>
-  <line x1="640" y1="556" x2="640" y2="632" stroke="#2E322F" stroke-width="1"/>
+  <line x1="448" y1="556" x2="448" y2="632" stroke="#2E322F" stroke-width="1"/>
+  <line x1="832" y1="556" x2="832" y2="632" stroke="#2E322F" stroke-width="1"/>
 
   <text x="88" y="588" fill="#6FA0D8" font-size="16" font-weight="600"
         font-family="'IBM Plex Sans', sans-serif">Specs neutral</text>
   <text x="88" y="616" fill="#9AA09C" font-size="12" font-family="'IBM Plex Mono', monospace">0 of 118 statements changed</text>
   <text x="88" y="638" fill="#9AA09C" font-size="12" font-family="'IBM Plex Mono', monospace">0 assertions modified</text>
 
-  <text x="672" y="588" fill="#F4F4F1" font-size="16" font-weight="600"
+  <text x="472" y="588" fill="#F4F4F1" font-size="16" font-weight="600"
         font-family="'IBM Plex Sans', sans-serif">Tests leaked</text>
-  <text x="672" y="616" fill="#9AA09C" font-size="12" font-family="'IBM Plex Mono', monospace">3 arrangements rewritten</text>
-  <text x="672" y="638" fill="#9AA09C" font-size="12" font-family="'IBM Plex Mono', monospace">the specs held, the test strategy did not</text>
+  <text x="472" y="616" fill="#9AA09C" font-size="12" font-family="'IBM Plex Mono', monospace">3 arrangements rewritten</text>
+  <text x="472" y="638" fill="#9AA09C" font-size="12" font-family="'IBM Plex Mono', monospace">the specs held, the test strategy did not</text>
+
+  <text x="856" y="588" fill="#F4F4F1" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">Code grew</text>
+  <text x="856" y="616" fill="#9AA09C" font-size="12" font-family="'IBM Plex Mono', monospace">main  +647 / -45 lines</text>
+  <text x="856" y="638" fill="#9AA09C" font-size="12" font-family="'IBM Plex Mono', monospace">tests +244 / -56 lines</text>
 
   <!-- ===== footer ===== -->
   <text x="64" y="694" fill="#8A908B" font-size="8" font-family="'IBM Plex Mono', monospace"
