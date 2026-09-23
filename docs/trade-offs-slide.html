@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code vs. spec vs. tests — slide</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,ital,wght@6..72,0,400;6..72,0,500;6..72,1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --paper:  #FBFBF9;
+    --ink:    #1A1C1B;
+    --muted:  #636865;
+    --soft:   #8B908C;
+    --rule:   #DEDFD8;
+    --accent: #1E3A5F;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+  body {
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    background: #EFEFEC;
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 2rem 1.5rem;
+  }
+  /* block + auto margins, not flex: a flex item will not shrink below the SVG's
+     intrinsic width, which clipped the first figure of this set on a phone. */
+  .frame { max-width: 1280px; margin: 0 auto; }
+  svg { display: block; width: 100%; height: auto; }
+  .colophon {
+    margin-top: 1rem; font-family: var(--font-mono); font-size: 0.66rem;
+    color: var(--soft); line-height: 1.7;
+  }
+</style>
+</head>
+<body>
+<div class="frame">
+
+<!-- Segment heights are the percentages, to scale. The previous version of this slide drew
+     three equal boxes and labelled them 60/35/5, which argued against its own numbers. -->
+<svg viewBox="0 0 1280 720" role="img" aria-labelledby="trade-t trade-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="trade-t">Code vs. spec vs. tests</title>
+  <desc id="trade-d">Two stacked bars drawn to scale. The left bar is an illustrative sketch of a traditional codebase: roughly sixty per cent application code, thirty-five per cent test suite, five per cent specifications that live in a wiki and go stale. The right bar is this repository, counted: 2,340 lines of application code at forty-three per cent, 2,665 lines of tests at forty-eight per cent, and 484 lines of co-located specifications at nine per cent. The test suite is the largest slice, not the smallest.</desc>
+
+  <rect width="1280" height="720" fill="#FBFBF9"/>
+
+  <!-- ===== title ===== -->
+  <text x="64" y="62" fill="#8B908C" font-size="8" font-family="'IBM Plex Mono', monospace"
+        letter-spacing="0.18em">ONE COLUMN IS ESTIMATED · THE OTHER IS COUNTED</text>
+  <text x="64" y="106" fill="#1A1C1B" font-size="40" font-weight="500"
+        font-family="'Newsreader', Georgia, serif">Code vs. spec vs. tests</text>
+
+  <!-- ===== column headers ===== -->
+  <text x="64" y="162" fill="#636865" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">Traditional codebase <tspan font-weight="400" font-style="italic" font-family="'Newsreader', Georgia, serif" font-size="17">(illustrative)</tspan></text>
+  <text x="640" y="162" fill="#1A1C1B" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">This repository <tspan font-weight="400" font-style="italic" font-family="'Newsreader', Georgia, serif" font-size="17">(counted, today)</tspan></text>
+
+  <!-- ===== left bar: estimated, so dashed and flat ===== -->
+  <rect x="64" y="186" width="150" height="216" fill="#1A1C1B" fill-opacity="0.04"
+        stroke="#1A1C1B" stroke-opacity="0.30" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="64" y="402" width="150" height="126" fill="#1A1C1B" fill-opacity="0.04"
+        stroke="#1A1C1B" stroke-opacity="0.30" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="64" y="528" width="150" height="18" fill="#1A1C1B" fill-opacity="0.04"
+        stroke="#1A1C1B" stroke-opacity="0.30" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <text x="240" y="290" fill="#636865" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">Application code</text>
+  <text x="240" y="310" fill="#8B908C" font-size="12" font-family="'IBM Plex Mono', monospace">about 60%</text>
+
+  <text x="240" y="461" fill="#636865" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">Verbose test suite</text>
+  <text x="240" y="481" fill="#8B908C" font-size="12" font-family="'IBM Plex Mono', monospace">about 35%</text>
+
+  <text x="240" y="533" fill="#636865" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">Wiki / Jira specs</text>
+  <text x="240" y="553" fill="#8B908C" font-size="12" font-family="'IBM Plex Mono', monospace">about 5%, and stale</text>
+
+  <!-- ===== right bar: measured ===== -->
+  <rect x="640" y="186" width="150" height="155" fill="#FFFFFF" stroke="#1A1C1B" stroke-width="1.2"/>
+  <rect x="640" y="341" width="150" height="173" fill="#1A1C1B" fill-opacity="0.05"
+        stroke="#636865" stroke-width="1.2"/>
+  <rect x="640" y="514" width="150" height="32" fill="#1E3A5F" fill-opacity="0.12"
+        stroke="#1E3A5F" stroke-width="1.6"/>
+
+  <text x="816" y="259" fill="#1A1C1B" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">Application code</text>
+  <text x="816" y="279" fill="#636865" font-size="12" font-family="'IBM Plex Mono', monospace">2,340 lines · 43%</text>
+
+  <text x="816" y="423" fill="#1A1C1B" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">Test suite</text>
+  <text x="816" y="443" fill="#636865" font-size="12" font-family="'IBM Plex Mono', monospace">2,665 lines · 48%</text>
+
+  <text x="816" y="526" fill="#1E3A5F" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">Co-located specs</text>
+  <text x="816" y="546" fill="#1E3A5F" font-size="12" font-family="'IBM Plex Mono', monospace">484 lines · 9%</text>
+
+  <!-- ===== the aside ===== -->
+  <line x1="64" y1="590" x2="1216" y2="590" stroke="#DEDFD8" stroke-width="1"/>
+  <text x="64" y="626" fill="#1A1C1B" font-size="22" font-style="italic"
+        font-family="'Newsreader', Georgia, serif">Specs are 9% of the tree, and the test suite is still the largest slice of it.</text>
+  <text x="64" y="654" fill="#1A1C1B" font-size="22" font-style="italic"
+        font-family="'Newsreader', Georgia, serif">What got leaner is each individual test, not the total.</text>
+
+  <!-- ===== footer ===== -->
+  <text x="64" y="694" fill="#8B908C" font-size="8" font-family="'IBM Plex Mono', monospace"
+        letter-spacing="0.12em">NON-BLANK LINES UNDER SRC/ · 5,489 TOTAL · SEGMENT HEIGHTS ARE THE PERCENTAGES, TO SCALE</text>
+</svg>
+
+  <p class="colophon">
+    Slide variant, 1280&times;720. The right-hand column is counted from the repository;
+    the left is a sketch of the shape it replaces and is labelled as such.
+  </p>
+</div>
+</body>
+</html>

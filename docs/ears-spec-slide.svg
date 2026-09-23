@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1280 720" role="img" aria-labelledby="espec-t espec-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="espec-t">The specification, in the repository</title>
+  <desc id="espec-d">The users capability specification as it is written in the repository: a Markdown doc comment on the package clause, holding the capability summary and requirements R1.1, R1.2 and R1.3 in EARS form. Each requirement carries a stable id.</desc>
+
+  <defs>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz,ital,wght@6..72,0,400;6..72,0,500;6..72,1,400&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap');</style>
+  </defs>
+
+  <rect width="1280" height="720" fill="#FBFBF9"/>
+
+  <text x="64" y="62" fill="#8B908C" font-size="8" font-family="'IBM Plex Mono', monospace"
+        letter-spacing="0.18em">SRC/MAIN/SCALA/REALWORLD/USERS/PACKAGE.SCALA</text>
+  <text x="64" y="106" fill="#1A1C1B" font-size="40" font-weight="500"
+        font-family="'Newsreader', Georgia, serif">The specification, in the repository</text>
+
+  <text x="64.0" y="190" fill="#636865" font-size="19" font-weight="600" font-family="'IBM Plex Mono', monospace" xml:space="preserve"># Capability: Users</text>
+  <text x="64.0" y="237" fill="#2E3330" font-size="19" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve">Owns account identity: registration, credential authentication, token issuance,</text>
+  <text x="64.0" y="268" fill="#2E3330" font-size="19" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve">and profile views.</text>
+  <text x="64.0" y="315" fill="#636865" font-size="19" font-weight="600" font-family="'IBM Plex Mono', monospace" xml:space="preserve">## Requirements</text>
+  <text x="64.0" y="362" fill="#8B908C" font-size="19" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve">*</text>
+  <text x="86.8" y="362" fill="#1E3A5F" font-size="19" font-weight="600" font-family="'IBM Plex Mono', monospace" xml:space="preserve">**users R1.1**</text>
+  <text x="246.4" y="362" fill="#2E3330" font-size="19" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve"> — </text>
+  <text x="280.6" y="362" fill="#1A1C1B" font-size="19" font-weight="600" font-family="'IBM Plex Mono', monospace" xml:space="preserve">**When**</text>
+  <text x="371.8" y="362" fill="#2E3330" font-size="19" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve"> user registration is requested with a valid email,</text>
+  <text x="64.0" y="393" fill="#2E3330" font-size="19" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve">  username, and password, </text>
+  <text x="360.4" y="393" fill="#1A1C1B" font-size="19" font-weight="600" font-family="'IBM Plex Mono', monospace" xml:space="preserve">**the users Business Component shall**</text>
+  <text x="793.6" y="393" fill="#2E3330" font-size="19" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve"> create the account,</text>
+  <text x="64.0" y="424" fill="#2E3330" font-size="19" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve">  issue an authentication token, and return the user profile.</text>
+  <text x="64.0" y="471" fill="#8B908C" font-size="19" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve">*</text>
+  <text x="86.8" y="471" fill="#1E3A5F" font-size="19" font-weight="600" font-family="'IBM Plex Mono', monospace" xml:space="preserve">**users R1.2**</text>
+  <text x="246.4" y="471" fill="#2E3330" font-size="19" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve"> — </text>
+  <text x="280.6" y="471" fill="#1A1C1B" font-size="19" font-weight="600" font-family="'IBM Plex Mono', monospace" xml:space="preserve">**When**</text>
+  <text x="371.8" y="471" fill="#2E3330" font-size="19" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve"> user registration is requested with an email that is</text>
+  <text x="64.0" y="502" fill="#2E3330" font-size="19" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve">  already registered, </text>
+  <text x="314.8" y="502" fill="#1A1C1B" font-size="19" font-weight="600" font-family="'IBM Plex Mono', monospace" xml:space="preserve">**the users Business Component shall**</text>
+  <text x="748.0" y="502" fill="#2E3330" font-size="19" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve"> reject the request with</text>
+  <text x="64.0" y="533" fill="#2E3330" font-size="19" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve">  a duplicate email error.</text>
+  <text x="64.0" y="580" fill="#8B908C" font-size="19" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve">*</text>
+  <text x="86.8" y="580" fill="#1E3A5F" font-size="19" font-weight="600" font-family="'IBM Plex Mono', monospace" xml:space="preserve">**users R1.3**</text>
+  <text x="246.4" y="580" fill="#2E3330" font-size="19" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve"> — </text>
+  <text x="280.6" y="580" fill="#1A1C1B" font-size="19" font-weight="600" font-family="'IBM Plex Mono', monospace" xml:space="preserve">**When**</text>
+  <text x="371.8" y="580" fill="#2E3330" font-size="19" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve"> user registration is requested with a username that is</text>
+  <text x="64.0" y="611" fill="#2E3330" font-size="19" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve">  already taken, </text>
+  <text x="257.8" y="611" fill="#1A1C1B" font-size="19" font-weight="600" font-family="'IBM Plex Mono', monospace" xml:space="preserve">**the users Business Component shall**</text>
+  <text x="691.0" y="611" fill="#2E3330" font-size="19" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve"> reject the request with a</text>
+  <text x="64.0" y="642" fill="#2E3330" font-size="19" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve">  duplicate username error.</text>
+
+
+
+  <text x="64" y="694" fill="#8B908C" font-size="8" font-family="'IBM Plex Mono', monospace"
+        letter-spacing="0.12em">EARS · MARKDOWN IN A DOC COMMENT, BESIDE THE CODE IT GOVERNS</text>
+</svg>

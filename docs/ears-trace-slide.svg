@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1280 720" role="img" aria-labelledby="etrace-t etrace-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="etrace-t">The id is the test&#x27;s name</title>
+  <desc id="etrace-d">The munit test that carries requirement R1.2. The requirement id opens the test name, which is the only thing that declares the link between the specification and the test.</desc>
+
+  <defs>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz,ital,wght@6..72,0,400;6..72,0,500;6..72,1,400&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap');</style>
+  </defs>
+
+  <rect width="1280" height="720" fill="#FBFBF9"/>
+
+  <text x="64" y="62" fill="#8B908C" font-size="8" font-family="'IBM Plex Mono', monospace"
+        letter-spacing="0.18em">SRC/TEST/SCALA/REALWORLD/USERS/REGISTERUSERSUITE.SCALA</text>
+  <text x="64" y="106" fill="#1A1C1B" font-size="40" font-weight="500"
+        font-family="'Newsreader', Georgia, serif">The id is the test&#x27;s name</text>
+
+  <text x="64.0" y="210" fill="#636865" font-size="22" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve">// Mapped 1:1 with requirement ID </text>
+  <text x="512.8" y="210" fill="#1E3A5F" font-size="22" font-weight="600" font-family="'IBM Plex Mono', monospace" xml:space="preserve">&quot;users R1.2&quot;</text>
+  <text x="64.0" y="246" fill="#2E3330" font-size="22" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve">test(</text>
+  <text x="130.0" y="246" fill="#1E3A5F" font-size="22" font-weight="600" font-family="'IBM Plex Mono', monospace" xml:space="preserve">&quot;R1.2 — rejects a duplicate email&quot;</text>
+  <text x="578.8" y="246" fill="#2E3330" font-size="22" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve">) {</text>
+  <text x="64.0" y="282" fill="#2E3330" font-size="22" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve">  for</text>
+  <text x="64.0" y="318" fill="#2E3330" font-size="22" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve">    fixture &lt;- UsersFixture()</text>
+  <text x="64.0" y="354" fill="#2E3330" font-size="22" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve">    _       &lt;- fixture.stored(&quot;jake&quot;, &quot;jake@jake.jake&quot;)</text>
+  <text x="64.0" y="390" fill="#2E3330" font-size="22" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve">    error   &lt;- rejected(fixture.users.register(&quot;jake2&quot;, &quot;jake@jake.jake&quot;, &quot;pass&quot;))</text>
+  <text x="64.0" y="426" fill="#2E3330" font-size="22" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve">  yield assertEquals(error, UserError.duplicateEmail)</text>
+  <text x="64.0" y="462" fill="#2E3330" font-size="22" font-weight="400" font-family="'IBM Plex Mono', monospace" xml:space="preserve">}</text>
+
+  <line x1="64" y1="556" x2="1216" y2="556" stroke="#DEDFD8" stroke-width="1"/>
+  <text x="64" y="594" fill="#1A1C1B" font-size="22" font-style="italic" font-family="'Newsreader', Georgia, serif">Each requirement id is the literal prefix of a munit test name.</text>
+  <text x="64" y="622" fill="#1A1C1B" font-size="22" font-style="italic" font-family="'Newsreader', Georgia, serif">Nothing else declares the link — no annotation, no registry.</text>
+
+  <text x="64" y="694" fill="#8B908C" font-size="8" font-family="'IBM Plex Mono', monospace"
+        letter-spacing="0.12em">SPECTRACESUITE READS BOTH FILES AS TEXT AND FAILS THE BUILD ON A GAP</text>
+</svg>
