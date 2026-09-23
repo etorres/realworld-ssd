@@ -168,6 +168,8 @@ the order instead of borrowing it.
 
 ![The storage-swap experiment](docs/experiment-figure.png)
 
+*Reading figure, portrait. A landscape 16:9 version for slides is [`docs/experiment-slide.png`](docs/experiment-slide.png).*
+
 [`docs/postgres-swap.md`](docs/postgres-swap.md) was written before the swap started — the surface, the
 hazards, and the three possible outcomes fixed in advance so the result could not be decided afterwards
 by whoever wrote it up. The results are appended to it, including the hazard that passed for the wrong
