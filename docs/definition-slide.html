@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What spec-driven development is — slide</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,ital,wght@6..72,0,400;6..72,0,500;6..72,1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --paper:  #FBFBF9;
+    --ink:    #1A1C1B;
+    --muted:  #636865;
+    --soft:   #8B908C;
+    --rule:   #DEDFD8;
+    --accent: #1E3A5F;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+  body {
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    background: #EFEFEC;
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 2rem 1.5rem;
+  }
+  /* block + auto margins, not flex: a flex item will not shrink below the SVG's
+     intrinsic width, which clipped the first figure of this set on a phone. */
+  .frame { max-width: 1280px; margin: 0 auto; }
+  svg { display: block; width: 100%; height: auto; }
+  .colophon {
+    margin-top: 1rem; font-family: var(--font-mono); font-size: 0.66rem;
+    color: var(--soft); line-height: 1.7;
+  }
+</style>
+</head>
+<body>
+<div class="frame">
+
+<!-- The definition is the only focal element. Three negations under it, because the
+     term now carries at least three other meanings the audience may arrive with. -->
+<svg viewBox="0 0 1280 720" role="img" aria-labelledby="def-t def-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="def-t">What spec-driven development is</title>
+  <desc id="def-d">A definition: a specification is a build artifact; every requirement is one testable statement carrying a stable id, and the build fails when the ids on either side stop matching. Three clarifications follow. It is not documentation, because a wiki page can be wrong for a year and the build still passes. It is not test-driven development, because the test is evidence for the requirement rather than the requirement itself. It is not a ticket, because an issue is closed and forgotten while this file ships with the code.</desc>
+
+  <rect width="1280" height="720" fill="#FBFBF9"/>
+
+  <!-- ===== title ===== -->
+  <text x="64" y="62" fill="#8B908C" font-size="8" font-family="'IBM Plex Mono', monospace"
+        letter-spacing="0.18em">ONE SENTENCE, BEFORE ANY OF THE EVIDENCE</text>
+  <text x="64" y="106" fill="#1A1C1B" font-size="40" font-weight="500"
+        font-family="'Newsreader', Georgia, serif">What spec-driven development is</text>
+
+  <!-- ===== the definition (the one focal element) ===== -->
+  <rect x="64" y="166" width="1152" height="164" rx="6" fill="#1E3A5F" fill-opacity="0.06"
+        stroke="#1E3A5F" stroke-width="1.6"/>
+  <text x="96" y="222" fill="#1E3A5F" font-size="28"
+        font-family="'Newsreader', Georgia, serif">A specification is a build artifact.</text>
+  <text x="96" y="262" fill="#1E3A5F" font-size="28"
+        font-family="'Newsreader', Georgia, serif">Every requirement is one testable statement carrying a stable id,</text>
+  <text x="96" y="302" fill="#1E3A5F" font-size="28"
+        font-family="'Newsreader', Georgia, serif">and the build fails when the ids on either side stop matching.</text>
+
+  <!-- ===== three things it is not ===== -->
+  <text x="64" y="410" fill="#1A1C1B" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">Not documentation</text>
+  <text x="300" y="410" fill="#636865" font-size="16"
+        font-family="'IBM Plex Sans', sans-serif">A wiki page can be wrong for a year and the build still passes.</text>
+
+  <text x="64" y="470" fill="#1A1C1B" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">Not TDD</text>
+  <text x="300" y="470" fill="#636865" font-size="16"
+        font-family="'IBM Plex Sans', sans-serif">The test is evidence for the requirement, not the requirement itself.</text>
+
+  <text x="64" y="530" fill="#1A1C1B" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">Not a ticket</text>
+  <text x="300" y="530" fill="#636865" font-size="16"
+        font-family="'IBM Plex Sans', sans-serif">An issue is closed and forgotten. This file ships with the code.</text>
+
+  <!-- ===== the aside ===== -->
+  <line x1="64" y1="590" x2="1216" y2="590" stroke="#DEDFD8" stroke-width="1"/>
+  <text x="64" y="628" fill="#1A1C1B" font-size="22" font-style="italic"
+        font-family="'Newsreader', Georgia, serif">The word is doing a lot of work elsewhere right now. This is the meaning used here, and</text>
+  <text x="64" y="656" fill="#1A1C1B" font-size="22" font-style="italic"
+        font-family="'Newsreader', Georgia, serif">everything after this slide is evidence for or against it.</text>
+
+  <!-- ===== footer ===== -->
+  <text x="64" y="694" fill="#8B908C" font-size="8" font-family="'IBM Plex Mono', monospace"
+        letter-spacing="0.12em">REALWORLD BACKEND · SCALA 3 + TYPELEVEL · SDD4J</text>
+</svg>
+
+  <p class="colophon">
+    Slide variant, 1280&times;720. Goes before the provenance figure: define the thing, then say
+    where its parts came from.
+  </p>
+</div>
+</body>
+</html>
