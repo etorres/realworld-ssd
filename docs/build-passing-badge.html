@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Build passing badge</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: transparent; }
+  body { padding: 2rem 1.5rem; }
+  .frame { max-width: 1280px; margin: 0 auto; }
+  svg { display: block; width: 260px; height: auto; }
+</style>
+</head>
+<body>
+<div class="frame">
+
+<!-- Deliberately no background rect: exported with omit_background so it sits on
+     whatever it is dropped onto. -->
+<svg viewBox="0 0 260 52" role="img" aria-label="Build passing" xmlns="http://www.w3.org/2000/svg">
+  <rect x="1" y="1" width="258" height="50" rx="8" fill="#2E7D4F" fill-opacity="0.10"
+        stroke="#2E7D4F" stroke-width="1.6"/>
+  <circle cx="30" cy="26" r="6" fill="#2E7D4F"/>
+  <text x="50" y="31" fill="#2E7D4F" font-size="15" font-weight="600"
+        font-family="'IBM Plex Mono', monospace" letter-spacing="0.06em">BUILD: PASSING</text>
+</svg>
+
+</div>
+</body>
+</html>

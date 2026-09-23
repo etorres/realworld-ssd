@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 260 52" role="img" aria-label="Build passing" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz,ital,wght@6..72,0,400;6..72,0,500;6..72,1,400&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap');</style>
+  </defs>
+  <rect x="1" y="1" width="258" height="50" rx="8" fill="#2E7D4F" fill-opacity="0.10"
+        stroke="#2E7D4F" stroke-width="1.6"/>
+  <circle cx="30" cy="26" r="6" fill="#2E7D4F"/>
+  <text x="50" y="31" fill="#2E7D4F" font-size="15" font-weight="600"
+        font-family="'IBM Plex Mono', monospace" letter-spacing="0.06em">BUILD: PASSING</text>
+</svg>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1280 720" role="img" aria-labelledby="tkplain-t tkplain-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="tkplain-t">The requirement, as it arrived</title>
+  <desc id="tkplain-d">A software ticket, CON-104, User Registration API Endpoint, typeset rather than screenshotted. Its description asks for validation done properly, an appropriate error on reuse, and errors handled cleanly.</desc>
+
+  <defs>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz,ital,wght@6..72,0,400;6..72,0,500;6..72,1,400&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap');</style>
+  </defs>
+
+  <rect width="1280" height="720" fill="#FBFBF9"/>
+
+  <text x="64" y="62" fill="#8B908C" font-size="8" font-family="'IBM Plex Mono', monospace"
+        letter-spacing="0.18em">THE TICKET THIS FEATURE STARTED FROM</text>
+  <text x="64" y="106" fill="#1A1C1B" font-size="40" font-weight="500"
+        font-family="'Newsreader', Georgia, serif">The requirement, as it arrived</text>
+
+  <rect x="64" y="170" width="740" height="400" rx="6" fill="#FFFFFF"
+        stroke="#1A1C1B" stroke-opacity="0.22" stroke-width="1"/>
+  <text x="96" y="212" fill="#1E3A5F" font-size="14" font-weight="600"
+        font-family="'IBM Plex Mono', monospace">CON-104</text>
+  <text x="188" y="212" fill="#1A1C1B" font-size="17" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">User Registration API Endpoint</text>
+  <line x1="96" y1="236" x2="772" y2="236" stroke="#DEDFD8" stroke-width="1"/>
+  <text x="96" y="262" fill="#8B908C" font-size="8" font-family="'IBM Plex Mono', monospace"
+        letter-spacing="0.14em">DESCRIPTION</text>
+
+  <text x="96" y="292" fill="#2E3330" font-size="17" font-family="'IBM Plex Sans', sans-serif">We need an endpoint so new users can sign up for the Conduit platform.</text>
+  <text x="96" y="316" fill="#2E3330" font-size="17" font-family="'IBM Plex Sans', sans-serif">Users should pass their email, username, and password.</text>
+  <text x="96" y="376" fill="#2E3330" font-size="17" font-family="'IBM Plex Sans', sans-serif">Make sure we validate inputs properly — email and username need to be</text>
+  <text x="96" y="400" fill="#2E3330" font-size="17" font-family="'IBM Plex Sans', sans-serif">unique, so show an appropriate error if someone tries to reuse them.</text>
+  <text x="96" y="460" fill="#2E3330" font-size="17" font-family="'IBM Plex Sans', sans-serif">If signup works, auto-login the user and send back a JWT token along</text>
+  <text x="96" y="484" fill="#2E3330" font-size="17" font-family="'IBM Plex Sans', sans-serif">with user details so they can start browsing.</text>
+  <text x="96" y="544" fill="#2E3330" font-size="17" font-family="'IBM Plex Sans', sans-serif">Also handle errors cleanly!</text>
+
+  <text x="852" y="292" fill="#8B908C" font-size="14" font-style="italic"
+        font-family="'Newsreader', Georgia, serif">Read it once. It sounds complete.</text>
+
+  <line x1="64" y1="612" x2="1216" y2="612" stroke="#DEDFD8" stroke-width="1"/>
+  <text x="64" y="650" fill="#1A1C1B" font-size="22" font-style="italic"
+        font-family="'Newsreader', Georgia, serif">A two-minute spec edit if you find it at the start. A thirty-minute detour if you</text>
+  <text x="64" y="678" fill="#1A1C1B" font-size="22" font-style="italic"
+        font-family="'Newsreader', Georgia, serif">find it in a red build at the end.</text>
+</svg>

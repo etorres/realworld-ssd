@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The requirement, as it arrived — slide</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,ital,wght@6..72,0,400;6..72,0,500;6..72,1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'IBM Plex Sans', system-ui, sans-serif; background: #EFEFEC;
+         color: #1A1C1B; min-height: 100vh; padding: 2rem 1.5rem; }
+  /* block + auto margins, not flex: a flex item will not shrink below the SVG's
+     intrinsic width, which clipped the first figure of this set on a phone. */
+  .frame { max-width: 1280px; margin: 0 auto; }
+  svg { display: block; width: 100%; height: auto; }
+  .colophon { margin-top: 1rem; font-family: 'IBM Plex Mono', monospace;
+               font-size: 0.66rem; color: #8B908C; line-height: 1.7; }
+</style>
+</head>
+<body>
+<div class="frame">
+
+<!-- Typeset rather than screenshotted. A screenshot of a tracker is unreadable at the
+     back of a room, and a fabricated one reads as a broken slide. -->
+<svg viewBox="0 0 1280 720" role="img" aria-labelledby="tkmarked-t tkmarked-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="tkmarked-t">The requirement, as it arrived</title>
+  <desc id="tkmarked-d">A software ticket, CON-104, User Registration API Endpoint, typeset rather than screenshotted. Its description asks for validation done properly, an appropriate error on reuse, and errors handled cleanly. Three phrases are marked as unverifiable: properly, an appropriate error, and cleanly. None of them can be checked by a build tool, and coverage is unverifiable: one test or five, nothing knows which.</desc>
+
+  <rect width="1280" height="720" fill="#FBFBF9"/>
+
+  <text x="64" y="62" fill="#8B908C" font-size="8" font-family="'IBM Plex Mono', monospace"
+        letter-spacing="0.18em">THE TICKET THIS FEATURE STARTED FROM</text>
+  <text x="64" y="106" fill="#1A1C1B" font-size="40" font-weight="500"
+        font-family="'Newsreader', Georgia, serif">The requirement, as it arrived</text>
+
+  <rect x="64" y="170" width="740" height="400" rx="6" fill="#FFFFFF"
+        stroke="#1A1C1B" stroke-opacity="0.22" stroke-width="1"/>
+  <text x="96" y="212" fill="#1E3A5F" font-size="14" font-weight="600"
+        font-family="'IBM Plex Mono', monospace">CON-104</text>
+  <text x="188" y="212" fill="#1A1C1B" font-size="17" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">User Registration API Endpoint</text>
+  <line x1="96" y1="236" x2="772" y2="236" stroke="#DEDFD8" stroke-width="1"/>
+  <text x="96" y="262" fill="#8B908C" font-size="8" font-family="'IBM Plex Mono', monospace"
+        letter-spacing="0.14em">DESCRIPTION</text>
+
+  <text x="96" y="292" fill="#2E3330" font-size="17" font-family="'IBM Plex Sans', sans-serif">We need an endpoint so new users can sign up for the Conduit platform.</text>
+  <text x="96" y="316" fill="#2E3330" font-size="17" font-family="'IBM Plex Sans', sans-serif">Users should pass their email, username, and password.</text>
+  <text x="96" y="376" fill="#2E3330" font-size="17" font-family="'IBM Plex Sans', sans-serif">Make sure we validate inputs <tspan fill="#B23A2B" font-weight="600">properly</tspan> — email and username need to be</text>
+  <text x="96" y="400" fill="#2E3330" font-size="17" font-family="'IBM Plex Sans', sans-serif">unique, so show <tspan fill="#B23A2B" font-weight="600">an appropriate error</tspan> if someone tries to reuse them.</text>
+  <text x="96" y="460" fill="#2E3330" font-size="17" font-family="'IBM Plex Sans', sans-serif">If signup works, auto-login the user and send back a JWT token along</text>
+  <text x="96" y="484" fill="#2E3330" font-size="17" font-family="'IBM Plex Sans', sans-serif">with user details so they can start browsing.</text>
+  <text x="96" y="544" fill="#2E3330" font-size="17" font-family="'IBM Plex Sans', sans-serif">Also handle errors <tspan fill="#B23A2B" font-weight="600">cleanly</tspan>!</text>
+
+  <text x="852" y="206" fill="#8B908C" font-size="8" font-family="'IBM Plex Mono', monospace"
+        letter-spacing="0.14em">WHAT NO BUILD TOOL CAN CHECK</text>
+  <text x="852" y="262" fill="#B23A2B" font-size="15" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">properly</text>
+  <text x="852" y="284" fill="#636865" font-size="13"
+        font-family="'IBM Plex Sans', sans-serif">by whose definition, and checked where?</text>
+  <text x="852" y="328" fill="#B23A2B" font-size="15" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">an appropriate error</text>
+  <text x="852" y="350" fill="#636865" font-size="13"
+        font-family="'IBM Plex Sans', sans-serif">409? 422? naming which field?</text>
+  <text x="852" y="394" fill="#B23A2B" font-size="15" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">cleanly</text>
+  <text x="852" y="416" fill="#636865" font-size="13"
+        font-family="'IBM Plex Sans', sans-serif">the word is doing no work at all</text>
+  <line x1="852" y1="444" x2="1216" y2="444" stroke="#DEDFD8" stroke-width="1"/>
+  <text x="852" y="478" fill="#1A1C1B" font-size="13" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">Coverage is unverifiable.</text>
+  <text x="852" y="500" fill="#636865" font-size="13"
+        font-family="'IBM Plex Sans', sans-serif">One test or five. Nothing knows which.</text>
+
+  <line x1="64" y1="612" x2="1216" y2="612" stroke="#DEDFD8" stroke-width="1"/>
+  <text x="64" y="650" fill="#1A1C1B" font-size="22" font-style="italic"
+        font-family="'Newsreader', Georgia, serif">A two-minute spec edit if you find it at the start. A thirty-minute detour if you</text>
+  <text x="64" y="678" fill="#1A1C1B" font-size="22" font-style="italic"
+        font-family="'Newsreader', Georgia, serif">find it in a red build at the end.</text>
+</svg>
+
+  <p class="colophon">Slide variant, 1280&times;720. The ticket prose is typeset, not screenshotted.</p>
+</div>
+</body>
+</html>
