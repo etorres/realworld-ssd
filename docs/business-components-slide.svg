@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1280 720" role="img" aria-labelledby="bc-tree-title bc-tree-desc" xmlns="http://www.w3.org/2000/svg">
+  <title id="bc-tree-title">Business components as code packages</title>
+  <desc id="bc-tree-desc">A package tree rooted at the base package. Below it sit the system document, the users business component, and four further components of the same shape. The users package is opened to show its own package.scala holding thirty-two EARS requirements, alongside the boundary, control and entity layers. Every business component is one package, and every package carries the specification that governs it.</desc>
+
+  <defs>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz,ital,wght@6..72,0,400;6..72,0,500;6..72,1,400&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap');</style>
+  </defs>
+
+
+  <rect width="1280" height="720" fill="#FBFBF9"/>
+
+  <!-- ===== title ===== -->
+  <text x="64" y="62" fill="#8B908C" font-size="8" font-family="'IBM Plex Mono', monospace"
+        letter-spacing="0.18em">BOUNDARY · CONTROL · ENTITY</text>
+  <text x="64" y="106" fill="#1A1C1B" font-size="40" font-weight="500"
+        font-family="'Newsreader', Georgia, serif">A business component is a package</text>
+
+  <!-- ===== tree connectors, drawn before the nodes ===== -->
+  <path d="M 244 354 H 262" fill="none" stroke="#636865" stroke-width="1.2"/>
+  <path d="M 262 242 V 466" fill="none" stroke="#636865" stroke-width="1.2"/>
+  <path d="M 262 242 H 280" fill="none" stroke="#636865" stroke-width="1.2"/>
+  <path d="M 262 354 H 280" fill="none" stroke="#636865" stroke-width="1.2"/>
+  <path d="M 262 466 H 280" fill="none" stroke="#636865" stroke-width="1.2"/>
+
+  <path d="M 528 354 H 546" fill="none" stroke="#636865" stroke-width="1.2"/>
+  <path d="M 546 186 V 522" fill="none" stroke="#636865" stroke-width="1.2"/>
+  <path d="M 546 186 H 564" fill="none" stroke="#1E3A5F" stroke-width="1.2"/>
+  <path d="M 546 298 H 564" fill="none" stroke="#636865" stroke-width="1.2"/>
+  <path d="M 546 410 H 564" fill="none" stroke="#636865" stroke-width="1.2"/>
+  <path d="M 546 522 H 564" fill="none" stroke="#636865" stroke-width="1.2"/>
+
+  <!-- ===== root ===== -->
+  <rect x="64" y="318" width="180" height="72" rx="6" fill="#FBFBF9"/>
+  <rect x="64" y="318" width="180" height="72" rx="6" fill="#FFFFFF" stroke="#1A1C1B" stroke-width="1.2"/>
+  <text x="84" y="352" fill="#1A1C1B" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">realworld</text>
+  <text x="84" y="374" fill="#636865" font-size="12" font-family="'IBM Plex Mono', monospace">base package</text>
+
+  <!-- ===== level two ===== -->
+  <rect x="280" y="206" width="248" height="72" rx="6" fill="#FBFBF9"/>
+  <rect x="280" y="206" width="248" height="72" rx="6" fill="#FFFFFF" stroke="#1A1C1B" stroke-width="1.2"/>
+  <text x="300" y="240" fill="#1A1C1B" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">package.scala</text>
+  <text x="300" y="262" fill="#636865" font-size="12" font-family="'IBM Plex Mono', monospace">3 invariants · 12 decisions</text>
+
+  <rect x="280" y="318" width="248" height="72" rx="6" fill="#FBFBF9"/>
+  <rect x="280" y="318" width="248" height="72" rx="6" fill="#FFFFFF" stroke="#1A1C1B" stroke-width="1.4"/>
+  <text x="300" y="352" fill="#1A1C1B" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">users</text>
+  <text x="300" y="374" fill="#636865" font-size="12" font-family="'IBM Plex Mono', monospace">one business component</text>
+
+  <rect x="280" y="430" width="248" height="72" rx="6" fill="#FBFBF9"/>
+  <rect x="280" y="430" width="248" height="72" rx="6" fill="#1A1C1B" fill-opacity="0.03"
+        stroke="#1A1C1B" stroke-opacity="0.30" stroke-width="1"/>
+  <text x="300" y="464" fill="#1A1C1B" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">4 more components</text>
+  <text x="300" y="486" fill="#636865" font-size="12" font-family="'IBM Plex Mono', monospace">same shape, own package.scala</text>
+
+  <!-- ===== level three: inside one component ===== -->
+  <rect x="564" y="150" width="248" height="72" rx="6" fill="#FBFBF9"/>
+  <rect x="564" y="150" width="248" height="72" rx="6" fill="#1E3A5F" fill-opacity="0.06"
+        stroke="#1E3A5F" stroke-width="1.4"/>
+  <text x="584" y="184" fill="#1E3A5F" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">package.scala</text>
+  <text x="584" y="206" fill="#1E3A5F" font-size="12" font-family="'IBM Plex Mono', monospace">32 EARS requirements</text>
+
+  <rect x="564" y="262" width="248" height="72" rx="6" fill="#FBFBF9"/>
+  <rect x="564" y="262" width="248" height="72" rx="6" fill="#FFFFFF" stroke="#1A1C1B" stroke-width="1.2"/>
+  <text x="584" y="296" fill="#1A1C1B" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">boundary</text>
+  <text x="584" y="318" fill="#636865" font-size="12" font-family="'IBM Plex Mono', monospace">the contract, and its routes</text>
+
+  <rect x="564" y="374" width="248" height="72" rx="6" fill="#FBFBF9"/>
+  <rect x="564" y="374" width="248" height="72" rx="6" fill="#FFFFFF" stroke="#1A1C1B" stroke-width="1.2"/>
+  <text x="584" y="408" fill="#1A1C1B" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">control</text>
+  <text x="584" y="430" fill="#636865" font-size="12" font-family="'IBM Plex Mono', monospace">use cases, repositories</text>
+
+  <rect x="564" y="486" width="248" height="72" rx="6" fill="#FBFBF9"/>
+  <rect x="564" y="486" width="248" height="72" rx="6" fill="#FFFFFF" stroke="#1A1C1B" stroke-width="1.2"/>
+  <text x="584" y="520" fill="#1A1C1B" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">entity</text>
+  <text x="584" y="542" fill="#636865" font-size="12" font-family="'IBM Plex Mono', monospace">domain state, no effects</text>
+
+  <text x="64" y="606" fill="#8B908C" font-size="12" font-family="'IBM Plex Mono', monospace">support · Main — declared non-spec: no capability behaviour, so no requirements</text>
+
+  <!-- ===== the rule ===== -->
+  <line x1="856" y1="150" x2="856" y2="558" stroke="#DEDFD8" stroke-width="1"/>
+
+  <text x="896" y="176" fill="#8B908C" font-size="8" font-family="'IBM Plex Mono', monospace"
+        letter-spacing="0.14em">THE RULE</text>
+  <text x="896" y="228" fill="#1A1C1B" font-size="24" font-style="italic"
+        font-family="'Newsreader', Georgia, serif">One capability,</text>
+  <text x="896" y="262" fill="#1A1C1B" font-size="24" font-style="italic"
+        font-family="'Newsreader', Georgia, serif">one package,</text>
+  <text x="896" y="296" fill="#1A1C1B" font-size="24" font-style="italic"
+        font-family="'Newsreader', Georgia, serif">one specification.</text>
+
+  <line x1="896" y1="330" x2="1216" y2="330" stroke="#DEDFD8" stroke-width="1"/>
+
+  <text x="896" y="362" fill="#1A1C1B" font-size="12" font-family="'IBM Plex Mono', monospace">boundary</text>
+  <text x="1000" y="362" fill="#636865" font-size="12" font-family="'IBM Plex Mono', monospace">the only public surface</text>
+  <text x="896" y="388" fill="#1A1C1B" font-size="12" font-family="'IBM Plex Mono', monospace">control</text>
+  <text x="1000" y="388" fill="#636865" font-size="12" font-family="'IBM Plex Mono', monospace">private to the package</text>
+  <text x="896" y="414" fill="#1A1C1B" font-size="12" font-family="'IBM Plex Mono', monospace">entity</text>
+  <text x="1000" y="414" fill="#636865" font-size="12" font-family="'IBM Plex Mono', monospace">private to the package</text>
+
+  <line x1="896" y1="448" x2="1216" y2="448" stroke="#DEDFD8" stroke-width="1"/>
+
+  <text x="896" y="480" fill="#1E3A5F" font-size="12" font-family="'IBM Plex Mono', monospace">115 capability requirements</text>
+  <text x="896" y="506" fill="#1E3A5F" font-size="12" font-family="'IBM Plex Mono', monospace">+ 3 system invariants = 118</text>
+
+  <!-- ===== footer ===== -->
+  <text x="64" y="694" fill="#8B908C" font-size="8" font-family="'IBM Plex Mono', monospace"
+        letter-spacing="0.12em">REALWORLD BACKEND · SCALA 3 + TYPELEVEL · SDD4J · SRC/MAIN/SCALA</text>
+</svg>
