@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spec-Driven Development in Practice — title</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,ital,wght@6..72,0,400;6..72,0,500;6..72,1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --paper:  #FBFBF9;
+    --ink:    #1A1C1B;
+    --muted:  #636865;
+    --soft:   #8B908C;
+    --rule:   #DEDFD8;
+    --accent: #1E3A5F;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+  body {
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    background: #EFEFEC;
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 2rem 1.5rem;
+  }
+  /* block + auto margins, not flex: a flex item will not shrink below the SVG's
+     intrinsic width, which clipped the first figure of this set on a phone. */
+  .frame { max-width: 1280px; margin: 0 auto; }
+  svg { display: block; width: 100%; height: auto; }
+  .colophon {
+    margin-top: 1rem; font-family: var(--font-mono); font-size: 0.66rem;
+    color: var(--soft); line-height: 1.7;
+  }
+</style>
+</head>
+<body>
+<div class="frame">
+
+<!-- The spine is 28px of accent rather than a panel: this slide is on screen while people
+     join, and the agenda that follows sits at 0.89 luminance. A dark title field would open
+     the talk with the one big step the rest of the deck was rebuilt to remove. -->
+<svg viewBox="0 0 1280 720" role="img" aria-labelledby="title-t title-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="title-t">Spec-Driven Development in Practice</title>
+  <desc id="title-d">Title slide. Spec-Driven Development in Practice — what survived, what drifted, and what it cost. Presented by Erik Torres on 25 September 2026. The code is at github.com/etorres/realworld-ssd. Built with Scala 3, the Typelevel stack and SDD4J.</desc>
+
+  <rect width="1280" height="720" fill="#FBFBF9"/>
+  <rect x="0" y="0" width="28" height="720" fill="#1E3A5F"/>
+
+  <text x="96" y="248" fill="#8B908C" font-size="8" font-family="'IBM Plex Mono', monospace"
+        letter-spacing="0.18em">A BACKEND WHERE THE SPECIFICATION IS A BUILD ARTIFACT</text>
+
+  <text x="96" y="332" fill="#1A1C1B" font-size="66" font-weight="500"
+        font-family="'Newsreader', Georgia, serif">Spec-Driven Development</text>
+  <text x="96" y="404" fill="#1A1C1B" font-size="66" font-weight="500"
+        font-family="'Newsreader', Georgia, serif">in Practice</text>
+
+  <text x="96" y="462" fill="#1E3A5F" font-size="28" font-style="italic"
+        font-family="'Newsreader', Georgia, serif">What survived, what drifted, and what it cost</text>
+
+  <line x1="96" y1="534" x2="1184" y2="534" stroke="#DEDFD8" stroke-width="1"/>
+
+  <text x="96" y="572" fill="#1A1C1B" font-size="16" font-weight="600"
+        font-family="'IBM Plex Sans', sans-serif">Erik Torres</text>
+  <text x="96" y="596" fill="#636865" font-size="13" font-family="'IBM Plex Mono', monospace">25 September 2026</text>
+
+  <text x="1184" y="572" fill="#1E3A5F" font-size="13" font-weight="500"
+        font-family="'IBM Plex Mono', monospace" text-anchor="end">github.com/etorres/realworld-ssd</text>
+  <text x="1184" y="596" fill="#636865" font-size="13"
+        font-family="'IBM Plex Mono', monospace" text-anchor="end">the specs, the tests and the write-up</text>
+
+  <text x="96" y="682" fill="#8B908C" font-size="8" font-family="'IBM Plex Mono', monospace"
+        letter-spacing="0.12em">SCALA 3 · TYPELEVEL · SDD4J · POSTGRESQL · 118 REQUIREMENTS · 122 TESTS</text>
+</svg>
+
+  <p class="colophon">
+    Title slide, 1280&times;720. Same system as the eleven figures: Newsreader title, project palette,
+    accent spine instead of a dark field.
+  </p>
+</div>
+</body>
+</html>
